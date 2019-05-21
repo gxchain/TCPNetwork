@@ -29,6 +29,10 @@ func handleMsgTransfer(ctx sdk.Context, keeper Keeper, msg MsgTransfer) sdk.Resu
 	if !msg.Value.IsValid() {
 		return sdk.ErrInsufficientCoins("invalid coins").Result()
 	}
+	// check fee
+	if msg.Fee.AmountOf(appCoin).Int64() < minTransferFee {
+		return sdk.ErrInsufficientCoins("insufficient fee").Result()
+	}
 
 	_, err := keeper.coinKeeper.SendCoins(ctx, msg.From, msg.To, msg.Value)
 	if err != nil {
@@ -41,18 +45,27 @@ func handleMsgTransfer(ctx sdk.Context, keeper Keeper, msg MsgTransfer) sdk.Resu
 // Handle a message to deploy contract
 func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy) sdk.Result {
 	// store code
-	if msg.Code == nil || msg.CID == nil || msg.Fee.AmountOf(appCoin).Int64() < minDeployFee {
+	if msg.Code == nil || msg.CID == nil {
 		return sdk.ErrUnknownRequest("there is invalid contract or not exist").Result()
 	}
-	keeper.DeployContract(ctx, msg.CID, msg.Code, msg.CodeHash)
+	// check fee
+	if msg.Fee.AmountOf(appCoin).Int64() < minDeployFee {
+		return sdk.ErrInsufficientCoins("insufficient fee").Result()
+	}
+
+	err := keeper.DeployContract(ctx, msg.CID, msg.Code, msg.CodeHash)
+	if err !=nil {
+		return err.Result()
+	}
 	return sdk.Result{}
 }
 
 // Handle a message to exec contract
 func handleMsgContractExec(ctx sdk.Context, keeper Keeper, msg MsgContractExec) sdk.Result {
 	if msg.Fee.AmountOf(appCoin).Int64() <= minExecFee {
-		return sdk.ErrInsufficientCoins("does not have enough coins").Result()
+		return sdk.ErrInsufficientCoins("insufficient fee").Result()
 	}
+
 	keeper.SetContractState(ctx, msg.CID, msg.From, msg.ResultHash[:])
 	return sdk.Result{Data:msg.ResultHash}
 }

@@ -6,6 +6,7 @@ import (
 )
 
 const (
+	minTransferFee = 1
 	minDeployFee = 10
 	minExecFee = 1
 )
@@ -16,14 +17,8 @@ type MsgTransfer struct {
 	To sdk.AccAddress
 	Value sdk.Coins
 	// State []byte // TODO
-	// Fee sdk.Coin
-
-	// validation
-	// From balance >= Value + Fee
-	// From balance - Value - Fee = NewState of From
-	// To balance + Value = NewState of To
+	Fee sdk.Coins
 }
-
 
 // MsgContractDeploy defines a ContractDeploy message
 type MsgContractDeploy struct {
@@ -50,11 +45,11 @@ type MsgContractExec struct {
 
 // NewMsgTransfer is a constructor function for MsgTransfer
 func NewMsgTransfer(from sdk.AccAddress, to sdk.AccAddress, value sdk.Coins) MsgTransfer {
-
 	return MsgTransfer{
-		From :  from,
-		To : to,
-		Value : value,
+		from,
+		to,
+		value,
+		sdk.Coins{sdk.NewInt64Coin(appCoin,minTransferFee)},
 	}
 }
 
@@ -164,7 +159,6 @@ func NewMsgContractExec(from sdk.AccAddress, CID sdk.AccAddress) MsgContractExec
 		sdk.Coins{sdk.NewInt64Coin(appCoin,minExecFee)},
 	}
 }
-
 
 // Route should return the name of the module
 func (msg MsgContractExec) Route() string { return "tcp" }
