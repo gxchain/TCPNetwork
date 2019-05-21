@@ -23,7 +23,6 @@ import (
 
 const (
 	appName = "tcp"
-
 )
 
 type tcpApp struct {
@@ -106,12 +105,9 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 
 	// The app.QueryRouter is the main query router where each module registers its routes
 	app.QueryRouter().
-		AddRoute("acc", auth.NewQuerier(app.accountKeeper))
+		AddRoute("acc", auth.NewQuerier(app.accountKeeper)).
+		AddRoute("tcp", tcp.NewQuerier(app.tcpKeeper))
 
-	//// The app.QueryRouter is the main query router where each module registers its routes
-	//app.QueryRouter().
-	//	AddRoute("tcp", tcp.NewQuerier(app.tcpKeeper)).
-	//	AddRoute("acc", auth.NewQuerier(app.accountKeeper))
 
 	// The initChainer handles translating the genesis.json file into initial state for the network
 	app.SetInitChainer(app.initChainer)

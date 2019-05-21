@@ -42,5 +42,9 @@ func (mc ModuleClient) GetQueryCmd() *cobra.Command {
 		Short: "Querying commands for the tcp module",
 	}
 
+	tcpTxCmd.AddCommand(client.GetCommands(
+		tcpcmd.GetCmdCode(mc.storeKey, mc.cdc),
+	)...)
+
 	return tcpTxCmd
 }
