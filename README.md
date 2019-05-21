@@ -4,8 +4,8 @@ TCP network is an efficient trusted computing network.
 
 ## QuickStart
 
-
-#### set env
+### Build
+set env
 ```bash
 mkdir -p $HOME/go/bin
 echo "export GOPATH=$HOME/go" >> ~/.bash_profile
@@ -13,10 +13,9 @@ echo "export GOBIN=\$GOPATH/bin" >> ~/.bash_profile
 echo "export PATH=\$PATH:\$GOBIN" >> ~/.bash_profile
 echo "export GO111MODULE=on" >> ~/.bash_profile
 source ~/.bash_profile
-
 ```
 
-#### build
+build
 ```bash
 # get source code
 git clone https://github.com/gxchain/TCPNetwork.git
@@ -34,7 +33,7 @@ tcpcli help
 
 ### Run
 
-#### init
+init
 ```
 # Initialize configuration files and genesis file
 tcpd init --chain-id tcp-chain
@@ -58,13 +57,13 @@ nscli config indent true
 nscli config trust-node true
 ```
 
-#### run tcpd
+run tcpd
 
 ```cassandraql
 tcpd start --log_level "*:debug" --trace
 
 ```
-#### run tcpcli
+run tcpcli
 ```cassandraql
 # query account
 tcpcli query account $(tcpcli keys show jack -a) 
