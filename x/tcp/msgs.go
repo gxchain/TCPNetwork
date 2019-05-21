@@ -32,13 +32,13 @@ type MsgContractDeploy struct {
 
 // MsgContractExec defines a ontractExec message
 type MsgContractExec struct {
-	From          sdk.AccAddress
-	CID           sdk.AccAddress
-	State         []byte         // TODO
-	RequestParams []RequestParam // TODO
-	Proof         []byte         // TODO
-	ResultHash    []byte
-	Fee           sdk.Coins
+	From sdk.AccAddress
+	CID sdk.AccAddress
+	State []byte // TODO
+	RequestParam RequestParam // TODO
+	Proof []byte // TODO
+	ResultHash []byte
+	Fee sdk.Coins
 }
 
 // NewMsgTransfer is a constructor function for MsgTransfer
@@ -138,20 +138,15 @@ func (msg MsgContractDeploy) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgContractDeploy is a constructor function for MsgTransfer
-func NewMsgContractExec(from sdk.AccAddress, CID sdk.AccAddress) MsgContractExec {
-	req := RequestParam{
-		//Some requestParam information
-	}
-	var reqS []RequestParam
-	reqS = append(reqS, req)
+func NewMsgContractExec(from sdk.AccAddress, state []byte, proof []byte, resultHash []byte, req RequestParam) MsgContractExec {
 	return MsgContractExec{
 		from,
-		CID,
-		[]byte{1},
-		reqS,
-		[]byte("proof"),
-		[]byte("result"),
-		sdk.Coins{sdk.NewInt64Coin(appCoin, minExecFee)},
+		req.CID,
+		state,
+		req,
+		proof,
+		resultHash,
+		sdk.Coins{sdk.NewInt64Coin(appCoin,20)}, //TODO set consume model
 	}
 }
 

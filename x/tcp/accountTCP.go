@@ -6,13 +6,13 @@ import (
 )
 
 type ConAccount struct {
-	Account  auth.BaseAccount  `json:"account"`
-	Code     []byte            `json:"code"`
-	CodeHash []byte            `json:"code_hash"`
-	Result   map[string][]byte `json:"result"`
+	Account auth.BaseAccount	`json:"account"`
+	Code []byte					`json:"code"`
+	CodeHash []byte				`json:"code_hash"`
+	Result map[string][]byte	`json:"result"`
 }
 
-func NewTCPWithDeploy(CID sdk.AccAddress, contractCode []byte, codeHash []byte) ConAccount {
+func NewTCPWithDeploy(CID sdk.AccAddress, contractCode []byte, codeHash []byte) ConAccount{
 	//addr := caller
 	//nonce := uint64(8)
 	//b := make([]byte, 8)
@@ -24,8 +24,8 @@ func NewTCPWithDeploy(CID sdk.AccAddress, contractCode []byte, codeHash []byte) 
 	account := auth.NewBaseAccountWithAddress(CID)
 	account.SetSequence(0)
 	ContractAcc := ConAccount{
-		Account:  account,
-		Code:     contractCode,
+		Account:account,
+		Code:contractCode,
 		CodeHash: codeHash,
 		Result:make(map[string][]byte),
 	}

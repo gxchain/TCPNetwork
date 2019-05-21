@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/gxchain/TCPNetwork/x/tcp"
+	"github.com/hot3246624/TCPNetwork/x/tcp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -14,21 +14,25 @@ import (
 )
 
 const (
-	flagAddress  = "address"
+	flagContractAddress  = "conAddress"
 	flagCode     = "code"
-	flagCodeHash = "codehash"
+	flagCodeHash = "codeHash"
+	flagCallerAddress = "calAddress"
+	flagState = "state"
+	flagProof = "proof"
+	flagResultHash = "resultHash"
 )
 
 // GetCmdContractDeploy is the CLI command for deploying contract
 func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deploy --from [from_addr] --address [contract_addr] --code [contract_code] --codehash [contract_hash]",
+		Use:   "deploy --conAddress [contract_addr] --code [contract_code] --codeHash [contract_hash]",
 		Short: "deploy contract",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
 			txBldr := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 
-			constractAddress := viper.GetString(flagAddress)
+			contractAddress := viper.GetString(flagContractAddress)
 			code := viper.GetString(flagCode)
 			codeHash := viper.GetString(flagCodeHash)
 
@@ -41,19 +45,22 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 			fromAddr := cliCtx.GetFromAddress()
 
 			// get to contract address
-			CIDAddr, err := sdk.AccAddressFromBech32(constractAddress)
+			CIDAddr, err := sdk.AccAddressFromBech32(contractAddress)
 			if err != nil {
 				return err
 			}
 			// contract address must not exist
-			err = cliCtx.EnsureAccountExistsFromAddr(CIDAddr)
+			//err = cliCtx.EnsureAccountExistsFromAddr(CIDAddr)
+
 			if err != nil {
+				return err
 			} else {
 				fmt.Println("contract address must not exist")
 			}
 
 			// TODO
 			msg := tcp.NewMsgContractDeploy(fromAddr, CIDAddr, []byte(code), []byte(codeHash))
+
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err
@@ -65,11 +72,11 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringP(flagAddress, "a", "", "contract address")
+	cmd.Flags().StringP(flagContractAddress, "a", "", "contract address")
 	cmd.Flags().StringP(flagCode, "c", "", "contract code")
 	cmd.Flags().StringP(flagCodeHash, "s", "", "contract code hash")
 
-	cmd.MarkFlagRequired(flagAddress)
+	cmd.MarkFlagRequired(flagContractAddress)
 	cmd.MarkFlagRequired(flagCode)
 	cmd.MarkFlagRequired(flagCodeHash)
 
@@ -79,13 +86,19 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 // GetCmdContractExec is the CLI command for deploying contract
 func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "exec --from [from_address] --address [contract_address]",
+		Use:   "exec --conAddress [contract_address] --calAddress [contract_caller] --state [state]  --proof [proof] --resultHash [resultHash]",
 		Short: "exec contract",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
 			txBldr := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 
-			constractAddress := viper.GetString(flagAddress)
+			contractAddress := viper.GetString(flagContractAddress)
+			callerAddress := viper.GetString(flagCallerAddress)
+
+			state := viper.GetString(flagState)
+			proof := viper.GetString(flagProof)
+			resultHash := viper.GetString(flagResultHash)
+
 
 			if err := cliCtx.EnsureAccountExists(); err != nil {
 				fmt.Println("from account not exists")
@@ -96,19 +109,34 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			fromAddr := cliCtx.GetFromAddress()
 
 			// get to contract address
-			CIDAddr, err := sdk.AccAddressFromBech32(constractAddress)
+			CIDAddr, err := sdk.AccAddressFromBech32(contractAddress)
+			if err != nil {
+				return err
+			}
+
+			// get to contract address
+			calAddr, err := sdk.AccAddressFromBech32(callerAddress)
 			if err != nil {
 				return err
 			}
 
 			// contract address must not exist
-			err = cliCtx.EnsureAccountExistsFromAddr(CIDAddr)
+			//err = cliCtx.EnsureAccountExistsFromAddr(CIDAddr)
+
 			if err != nil {
 				fmt.Println("contract address not exists")
 				return err
 			}
 
-			msg := tcp.NewMsgContractExec(fromAddr, CIDAddr)
+			req := tcp.RequestParam{
+				From:calAddr,
+				CID:CIDAddr,
+				Proxy:fromAddr,
+
+			}
+
+			msg := tcp.NewMsgContractExec(fromAddr, []byte(state), []byte(proof), []byte(resultHash), req)
+
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err
@@ -119,8 +147,8 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringP(flagAddress, "a", "", "contract address")
-	cmd.MarkFlagRequired(flagAddress)
+	cmd.Flags().StringP(flagContractAddress, "a", "", "contract address")
+	cmd.MarkFlagRequired(flagContractAddress)
 
 	return cmd
 

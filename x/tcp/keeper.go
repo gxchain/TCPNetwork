@@ -5,6 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"fmt"
 )
 
 // Keeper maintains the link to data storage and exposes getter/setter methods for the various parts of the state machine
@@ -23,7 +24,8 @@ func NewKeeper(coinKeeper bank.Keeper, storeKey sdk.StoreKey, cdc *codec.Codec) 
 	}
 }
 
-func (k Keeper) GetContract(ctx sdk.Context, addr sdk.Address) ConAccount {
+
+func (k Keeper)GetContract(ctx sdk.Context, addr sdk.AccAddress) ConAccount {
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has([]byte(addr.Bytes())) {
 		return ConAccount{}
@@ -34,7 +36,8 @@ func (k Keeper) GetContract(ctx sdk.Context, addr sdk.Address) ConAccount {
 	return conA
 }
 
-func (k Keeper) GetResult(ctx sdk.Context, caller sdk.Address, contractAddr sdk.Address) []byte {
+
+func (k Keeper)GetResult(ctx sdk.Context, caller sdk.AccAddress, contractAddr sdk.AccAddress) []byte {
 	conA := k.GetContract(ctx, contractAddr)
 	return conA.Result[caller.String()]
 }
@@ -47,13 +50,24 @@ func (k Keeper) DeployContract(ctx sdk.Context, contractAddr sdk.AccAddress, con
 	}
 	conAccount := NewTCPWithDeploy(contractAddr, contactCode, contactHash)
 	store.Set(contractAddr.Bytes(), k.cdc.MustMarshalBinaryBare(conAccount))
+
+	fmt.Println("==========deploy contract start===========")
+	fmt.Println("conAccount info:", conAccount)
+	account := k.GetContract(ctx, contractAddr)
+	fmt.Println("deploy contract:", account)
+	fmt.Println("==========deploy contract start===========")
 	return nil
 }
 
-func (k Keeper) SetContractState(ctx sdk.Context, contractAddr sdk.AccAddress, addr sdk.AccAddress, result []byte) sdk.Error {
+func (k Keeper)SetContractState(ctx sdk.Context, contractAddr sdk.AccAddress, fromAddr sdk.AccAddress, resultHash []byte) bool {
 	conA := k.GetContract(ctx, contractAddr)
-	conA.Result[addr.String()] = result
+	fmt.Println("==========execute contract start===========")
+	fmt.Println("contract info:", contractAddr, conA, conA.Result)
+	fmt.Println("==========execute contract end===========")
+	conA.Result[fromAddr.String()] = resultHash
 	store := ctx.KVStore(k.storeKey)
-	store.Set(conA.Account.Address.Bytes(), k.cdc.MustMarshalBinaryBare(conA))
-	return nil
+
+	store.Set(contractAddr.Bytes(), k.cdc.MustMarshalBinaryBare(conA))
+
+	return true
 }
