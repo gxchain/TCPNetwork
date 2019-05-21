@@ -35,7 +35,7 @@ const (
 	storeAcc = "acc"
 	storeTCP = "tcp"
 
-	flagFrom     = "from"
+	flagFrom   = "from"
 	flagTo     = "to"
 	flagAmount = "amount"
 )
