@@ -6,7 +6,7 @@ import (
 
 // RegisterCodec registers concrete types on the Amino codec
 func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgTransfer{}, "tcp/Transfer", nil)
-	cdc.RegisterConcrete(MsgContractDeploy{}, "tcp/ContractDeploy", nil)
-	cdc.RegisterConcrete(MsgContractExec{}, "tcp/ContractExec", nil)
+	cdc.RegisterConcrete(MsgTransfer{}, "tcp/transfer", nil)
+	cdc.RegisterConcrete(MsgContractDeploy{}, "tcp/deploy", nil)
+	cdc.RegisterConcrete(MsgContractExec{}, "tcp/exec", nil)
 }

@@ -3,7 +3,7 @@ package client
 import (
 	"github.com/cosmos/cosmos-sdk/client"
 
-	tcpcmd "github.com/hot3246624/TCPNetwork/x/tcp/client/cli"
+	tcpcmd "github.com/gxchain/TCPNetwork/x/tcp/client/cli"
 
 	"github.com/spf13/cobra"
 	"github.com/tendermint/go-amino"
@@ -41,10 +41,6 @@ func (mc ModuleClient) GetQueryCmd() *cobra.Command {
 		Use:   "tcp",
 		Short: "Querying commands for the tcp module",
 	}
-
-	//tcpTxCmd.AddCommand(client.GetCommands(
-	//	//	tcpcmd.GetCmdName(mc.storeKey, mc.cdc),
-	//	//)...)
 
 	return tcpTxCmd
 }

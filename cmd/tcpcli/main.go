@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
-	"github.com/hot3246624/TCPNetwork/x/tcp"
+	"github.com/gxchain/TCPNetwork/x/tcp"
 	"os"
 	"path"
 
@@ -25,10 +25,10 @@ import (
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
 
-	app "github.com/hot3246624/TCPNetwork"
+	app "github.com/gxchain/TCPNetwork"
 
-	tcpclient "github.com/hot3246624/TCPNetwork/x/tcp/client"
-	tcprest "github.com/hot3246624/TCPNetwork/x/tcp/client/rest"
+	tcpclient "github.com/gxchain/TCPNetwork/x/tcp/client"
+	tcprest "github.com/gxchain/TCPNetwork/x/tcp/client/rest"
 )
 
 const (

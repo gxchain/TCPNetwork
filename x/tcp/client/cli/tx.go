@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/hot3246624/TCPNetwork/x/tcp"
+	"github.com/gxchain/TCPNetwork/x/tcp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 

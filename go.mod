@@ -1,4 +1,4 @@
-module github.com/hot3246624/TCPNetwork
+module github.com/gxchain/TCPNetwork
 
 go 1.12
 
