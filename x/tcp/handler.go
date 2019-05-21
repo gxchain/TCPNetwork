@@ -36,7 +36,6 @@ func handleMsgTransfer(ctx sdk.Context, keeper Keeper, msg MsgTransfer) sdk.Resu
 	}
 
 	return sdk.Result{}
-
 }
 
 // Handle a message to deploy contract

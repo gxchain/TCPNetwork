@@ -5,6 +5,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+const (
+	minDeployFee = 10
+	minExecFee = 1
+)
 
 // MsgTransfer defines a transfer message
 type MsgTransfer struct {
@@ -102,7 +106,7 @@ func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, 
 		contractAcc.Code,
 		contractAcc.CodeHash,
 		[]byte{0},
-		sdk.Coins{sdk.NewInt64Coin(appCoin,10)},
+		sdk.Coins{sdk.NewInt64Coin(appCoin,minDeployFee)},
 	}
 }
 
@@ -157,8 +161,7 @@ func NewMsgContractExec(from sdk.AccAddress, CID sdk.AccAddress) MsgContractExec
 		reqS,
 		[]byte("proof"),
 		[]byte("result"),
-		sdk.Coins{sdk.NewInt64Coin(appCoin,1)},
-
+		sdk.Coins{sdk.NewInt64Coin(appCoin,minExecFee)},
 	}
 }
 
