@@ -117,18 +117,12 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			}
 
 			cliCtx.PrintResponse = true
-
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg}, false)
 		},
 	}
 
 	cmd.Flags().StringP(flagAddress, "a", "", "contract address")
-	cmd.Flags().StringP(flagCode, "c", "", "contract code")
-	cmd.Flags().StringP(flagCodeHash, "s", "", "contract code hash")
-
 	cmd.MarkFlagRequired(flagAddress)
-	cmd.MarkFlagRequired(flagCode)
-	cmd.MarkFlagRequired(flagCodeHash)
 
 	return cmd
 
