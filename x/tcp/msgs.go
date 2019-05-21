@@ -144,7 +144,7 @@ func (msg MsgContractDeploy) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgContractDeploy is a constructor function for MsgTransfer
-func NewMsgContractExec(from sdk.AccAddress) MsgContractExec {
+func NewMsgContractExec(from sdk.AccAddress, CID sdk.AccAddress) MsgContractExec {
 	req := RequestParam{
 		//Some requestParam information
 	}
@@ -152,7 +152,7 @@ func NewMsgContractExec(from sdk.AccAddress) MsgContractExec {
 	reqS = append(reqS, req)
 	return MsgContractExec{
 		from,
-		req.CID,
+		CID,
 		[]byte{1},
 		reqS,
 		[]byte("proof"),

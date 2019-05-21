@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	//flagFrom     = "from"
 	flagAddress  = "address"
 	flagCode     = "code"
 	flagCodeHash = "codehash"
@@ -23,13 +22,12 @@ const (
 // GetCmdContractDeploy is the CLI command for deploying contract
 func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deploy [from_addr] [contract_addr] [contract_code] [contract_hash]",
+		Use:   "deploy --from [from_addr] --address [contract_addr] --code [contract_code] --codehash [contract_hash]",
 		Short: "deploy contract",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
 			txBldr := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 
-			// from := viper.GetString(flagFrom)
 			constractAddress := viper.GetString(flagAddress)
 			code := viper.GetString(flagCode)
 			codeHash := viper.GetString(flagCodeHash)
@@ -63,17 +61,14 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 
 			cliCtx.PrintResponse = true
 
-			// return utils.CompleteAndBroadcastTxCLI(txBldr, cliCtx, msgs)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg}, false)
 		},
 	}
 
-	//cmd.Flags().StringP(flagFrom, "f", "", "from address")
 	cmd.Flags().StringP(flagAddress, "a", "", "contract address")
 	cmd.Flags().StringP(flagCode, "c", "", "contract code")
 	cmd.Flags().StringP(flagCodeHash, "s", "", "contract code hash")
 
-	//cmd.MarkFlagRequired(flagFrom)
 	cmd.MarkFlagRequired(flagAddress)
 	cmd.MarkFlagRequired(flagCode)
 	cmd.MarkFlagRequired(flagCodeHash)
@@ -84,25 +79,38 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 
 // GetCmdContractExec is the CLI command for deploying contract
 func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "exec [name] [value]",
+	cmd := &cobra.Command{
+		Use:   "exec --from [from_address] --address [contract_address]",
 		Short: "exec contract",
-		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
-
 			txBldr := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 
+			constractAddress := viper.GetString(flagAddress)
+
 			if err := cliCtx.EnsureAccountExists(); err != nil {
+				fmt.Println("from account not exists")
 				return err
 			}
 
-			fromAddr, err := sdk.AccAddressFromBech32(args[0])
+			// get from address
+			fromAddr := cliCtx.GetFromAddress()
+
+			// get to contract address
+			CIDAddr, err := sdk.AccAddressFromBech32(constractAddress)
 			if err != nil {
 				return err
 			}
 
-			msg := tcp.NewMsgContractExec(fromAddr)
+			// contract address must not exist
+			err = cliCtx.EnsureAccountExistsFromAddr(CIDAddr)
+			if err != nil {
+				fmt.Println("contract address not exists")
+				return err
+			}
+
+
+			msg := tcp.NewMsgContractExec(fromAddr, CIDAddr)
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err
@@ -110,8 +118,18 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 
 			cliCtx.PrintResponse = true
 
-			// return utils.CompleteAndBroadcastTxCLI(txBldr, cliCtx, msgs)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg}, false)
 		},
 	}
+
+	cmd.Flags().StringP(flagAddress, "a", "", "contract address")
+	cmd.Flags().StringP(flagCode, "c", "", "contract code")
+	cmd.Flags().StringP(flagCodeHash, "s", "", "contract code hash")
+
+	cmd.MarkFlagRequired(flagAddress)
+	cmd.MarkFlagRequired(flagCode)
+	cmd.MarkFlagRequired(flagCodeHash)
+
+	return cmd
+
 }
