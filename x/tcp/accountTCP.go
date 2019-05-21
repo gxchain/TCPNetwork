@@ -27,7 +27,8 @@ func NewTCPWithDeploy(CID sdk.AccAddress, contractCode []byte, codeHash []byte) 
 		Account:  account,
 		Code:     contractCode,
 		CodeHash: codeHash,
+		Result:make(map[string][]byte),
 	}
-
+	ContractAcc.Result["test"] = []byte("test")
 	return ContractAcc
 }
