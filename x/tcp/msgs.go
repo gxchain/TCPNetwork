@@ -7,14 +7,14 @@ import (
 
 const (
 	minTransferFee = 1
-	minDeployFee = 10
-	minExecFee = 1
+	minDeployFee   = 10
+	minExecFee     = 1
 )
 
 // MsgTransfer defines a transfer message
 type MsgTransfer struct {
-	From sdk.AccAddress
-	To sdk.AccAddress
+	From  sdk.AccAddress
+	To    sdk.AccAddress
 	Value sdk.Coins
 	// State []byte // TODO
 	Fee sdk.Coins
@@ -22,26 +22,24 @@ type MsgTransfer struct {
 
 // MsgContractDeploy defines a ContractDeploy message
 type MsgContractDeploy struct {
-	From sdk.AccAddress
-	CID sdk.AccAddress
-	Code []byte
+	From     sdk.AccAddress
+	CID      sdk.AccAddress
+	Code     []byte
 	CodeHash []byte
-	State []byte // TODO
-	Fee sdk.Coins
+	State    []byte // TODO
+	Fee      sdk.Coins
 }
 
 // MsgContractExec defines a ontractExec message
 type MsgContractExec struct {
-	From sdk.AccAddress
-	CID sdk.AccAddress
-	State []byte // TODO
+	From          sdk.AccAddress
+	CID           sdk.AccAddress
+	State         []byte         // TODO
 	RequestParams []RequestParam // TODO
-	Proof []byte // TODO
-	ResultHash []byte
-	Fee sdk.Coins
+	Proof         []byte         // TODO
+	ResultHash    []byte
+	Fee           sdk.Coins
 }
-
-
 
 // NewMsgTransfer is a constructor function for MsgTransfer
 func NewMsgTransfer(from sdk.AccAddress, to sdk.AccAddress, value sdk.Coins) MsgTransfer {
@@ -49,7 +47,7 @@ func NewMsgTransfer(from sdk.AccAddress, to sdk.AccAddress, value sdk.Coins) Msg
 		from,
 		to,
 		value,
-		sdk.Coins{sdk.NewInt64Coin(appCoin,minTransferFee)},
+		sdk.Coins{sdk.NewInt64Coin(appCoin, minTransferFee)},
 	}
 }
 
@@ -89,8 +87,6 @@ func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.From}
 }
 
-
-
 // NewMsgContractDeploy is a constructor function for MsgTransfer
 func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, codeHash []byte) MsgContractDeploy {
 	// create contract account
@@ -101,16 +97,15 @@ func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, 
 		contractAcc.Code,
 		contractAcc.CodeHash,
 		[]byte{0},
-		sdk.Coins{sdk.NewInt64Coin(appCoin,minDeployFee)},
+		sdk.Coins{sdk.NewInt64Coin(appCoin, minDeployFee)},
 	}
 }
-
 
 // Route should return the name of the module
 func (msg MsgContractDeploy) Route() string { return "tcp" }
 
 // Type should return the action
-func (msg MsgContractDeploy) Type() string { return "contract deploy" }
+func (msg MsgContractDeploy) Type() string { return "contract_deploy" }
 
 // ValidateBasic runs stateless checks on the message
 func (msg MsgContractDeploy) ValidateBasic() sdk.Error {
@@ -118,7 +113,7 @@ func (msg MsgContractDeploy) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress(msg.From.String())
 	}
 
-	if msg.CID.Empty() || msg.Code == nil || msg.CodeHash == nil{
+	if msg.CID.Empty() || msg.Code == nil || msg.CodeHash == nil {
 		return sdk.ErrUnknownRequest("Contract cannot be nil")
 	}
 
@@ -156,7 +151,7 @@ func NewMsgContractExec(from sdk.AccAddress, CID sdk.AccAddress) MsgContractExec
 		reqS,
 		[]byte("proof"),
 		[]byte("result"),
-		sdk.Coins{sdk.NewInt64Coin(appCoin,minExecFee)},
+		sdk.Coins{sdk.NewInt64Coin(appCoin, minExecFee)},
 	}
 }
 
@@ -164,7 +159,7 @@ func NewMsgContractExec(from sdk.AccAddress, CID sdk.AccAddress) MsgContractExec
 func (msg MsgContractExec) Route() string { return "tcp" }
 
 // Type should return the action
-func (msg MsgContractExec) Type() string { return "contract execute" }
+func (msg MsgContractExec) Type() string { return "contract_execute" }
 
 // ValidateBasic runs stateless checks on the message
 func (msg MsgContractExec) ValidateBasic() sdk.Error {

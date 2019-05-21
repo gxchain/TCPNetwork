@@ -73,7 +73,6 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 	cmd.MarkFlagRequired(flagCode)
 	cmd.MarkFlagRequired(flagCodeHash)
 
-
 	return cmd
 }
 
@@ -108,7 +107,6 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 				fmt.Println("contract address not exists")
 				return err
 			}
-
 
 			msg := tcp.NewMsgContractExec(fromAddr, CIDAddr)
 			err = msg.ValidateBasic()

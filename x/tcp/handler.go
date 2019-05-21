@@ -54,7 +54,7 @@ func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy)
 	}
 
 	err := keeper.DeployContract(ctx, msg.CID, msg.Code, msg.CodeHash)
-	if err !=nil {
+	if err != nil {
 		return err.Result()
 	}
 	return sdk.Result{}
@@ -67,5 +67,5 @@ func handleMsgContractExec(ctx sdk.Context, keeper Keeper, msg MsgContractExec) 
 	}
 
 	keeper.SetContractState(ctx, msg.CID, msg.From, msg.ResultHash[:])
-	return sdk.Result{Data:msg.ResultHash}
+	return sdk.Result{Data: msg.ResultHash}
 }

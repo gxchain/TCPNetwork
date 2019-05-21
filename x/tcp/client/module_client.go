@@ -6,7 +6,7 @@ import (
 	tcpcmd "github.com/hot3246624/TCPNetwork/x/tcp/client/cli"
 
 	"github.com/spf13/cobra"
-	amino "github.com/tendermint/go-amino"
+	"github.com/tendermint/go-amino"
 )
 
 // ModuleClient exports all client functionality from this module
