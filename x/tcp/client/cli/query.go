@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/spf13/cobra"
 	"github.com/gxchain/TCPNetwork/x/tcp"
-
+	"github.com/spf13/cobra"
 )
 
 // GetCmdCode queries a list of all names
