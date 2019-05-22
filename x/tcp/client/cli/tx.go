@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/hot3246624/TCPNetwork/x/tcp"
+	"github.com/gxchain/TCPNetwork/x/tcp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -147,8 +147,19 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
+
 	cmd.Flags().StringP(flagContractAddress, "a", "", "contract address")
+	cmd.Flags().StringP(flagCallerAddress, "c", "", "contract caller address")
+	cmd.Flags().StringP(flagState, "s", "", "contract state")
+	cmd.Flags().StringP(flagProof, "p", "", "contract proof")
+	cmd.Flags().StringP(flagResultHash, "r", "", "contract exec result hash")
+
 	cmd.MarkFlagRequired(flagContractAddress)
+	cmd.MarkFlagRequired(flagCallerAddress)
+	cmd.MarkFlagRequired(flagState)
+	cmd.MarkFlagRequired(flagProof)
+	cmd.MarkFlagRequired(flagResultHash)
+
 
 	return cmd
 
