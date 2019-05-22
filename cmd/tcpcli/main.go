@@ -26,7 +26,6 @@ import (
 	bank "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
 
 	app "github.com/gxchain/TCPNetwork"
-
 	tcpclient "github.com/gxchain/TCPNetwork/x/tcp/client"
 	tcprest "github.com/gxchain/TCPNetwork/x/tcp/client/rest"
 )
@@ -51,9 +50,9 @@ func main() {
 
 	// Read in the configuration file for the sdk
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(tcpclient.Bech32PrefixAccAddr, tcpclient.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(tcpclient.Bech32PrefixValAddr, tcpclient.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(tcpclient.Bech32PrefixConsAddr, tcpclient.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(tcp.Bech32PrefixAccAddr, tcp.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(tcp.Bech32PrefixValAddr, tcp.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(tcp.Bech32PrefixConsAddr, tcp.Bech32PrefixConsPub)
 	config.Seal()
 
 	mc := []sdk.ModuleClients{
