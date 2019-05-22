@@ -32,13 +32,13 @@ type MsgContractDeploy struct {
 
 // MsgContractExec defines a ontractExec message
 type MsgContractExec struct {
-	From sdk.AccAddress
-	CID sdk.AccAddress
-	State []byte // TODO
+	From         sdk.AccAddress
+	CID          sdk.AccAddress
+	State        []byte       // TODO
 	RequestParam RequestParam // TODO
-	Proof []byte // TODO
-	ResultHash []byte
-	Fee sdk.Coins
+	Proof        []byte       // TODO
+	ResultHash   []byte
+	Fee          sdk.Coins
 }
 
 // NewMsgTransfer is a constructor function for MsgTransfer
@@ -146,7 +146,7 @@ func NewMsgContractExec(from sdk.AccAddress, state []byte, proof []byte, resultH
 		req,
 		proof,
 		resultHash,
-		sdk.Coins{sdk.NewInt64Coin(appCoin,20)}, //TODO set consume model
+		sdk.Coins{sdk.NewInt64Coin(appCoin, 20)}, //TODO set consume model
 	}
 }
 

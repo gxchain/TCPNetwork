@@ -22,7 +22,6 @@ type RequestParam struct {
 	DataSources []Amount		`json:"dataSource"`
 	Fee         sdk.Coins		`json:"fee"`
 	Sig         []byte			`json:"signature"`
-
 }
 
 type Balance struct {

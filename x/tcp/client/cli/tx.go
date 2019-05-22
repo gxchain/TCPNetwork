@@ -14,13 +14,13 @@ import (
 )
 
 const (
-	flagContractAddress  = "conAddress"
-	flagCode     = "code"
-	flagCodeHash = "codeHash"
-	flagCallerAddress = "calAddress"
-	flagState = "state"
-	flagProof = "proof"
-	flagResultHash = "resultHash"
+	flagContractAddress = "conAddress"
+	flagCode            = "code"
+	flagCodeHash        = "codeHash"
+	flagCallerAddress   = "calAddress"
+	flagState           = "state"
+	flagProof           = "proof"
+	flagResultHash      = "resultHash"
 )
 
 // GetCmdContractDeploy is the CLI command for deploying contract
@@ -99,7 +99,6 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			proof := viper.GetString(flagProof)
 			resultHash := viper.GetString(flagResultHash)
 
-
 			if err := cliCtx.EnsureAccountExists(); err != nil {
 				fmt.Println("from account not exists")
 				return err
@@ -129,10 +128,9 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			}
 
 			req := tcp.RequestParam{
-				From:calAddr,
-				CID:CIDAddr,
-				Proxy:fromAddr,
-
+				From:  calAddr,
+				CID:   CIDAddr,
+				Proxy: fromAddr,
 			}
 
 			msg := tcp.NewMsgContractExec(fromAddr, []byte(state), []byte(proof), []byte(resultHash), req)
@@ -147,7 +145,6 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-
 	cmd.Flags().StringP(flagContractAddress, "a", "", "contract address")
 	cmd.Flags().StringP(flagCallerAddress, "c", "", "contract caller address")
 	cmd.Flags().StringP(flagState, "s", "", "contract state")
@@ -159,7 +156,6 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 	cmd.MarkFlagRequired(flagState)
 	cmd.MarkFlagRequired(flagProof)
 	cmd.MarkFlagRequired(flagResultHash)
-
 
 	return cmd
 
