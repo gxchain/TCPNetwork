@@ -51,9 +51,9 @@ func main() {
 
 	// Read in the configuration file for the sdk
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(sdk.Bech32PrefixAccAddr, sdk.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(sdk.Bech32PrefixValAddr, sdk.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(tcpclient.Bech32PrefixAccAddr, tcpclient.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(tcpclient.Bech32PrefixValAddr, tcpclient.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(tcpclient.Bech32PrefixConsAddr, tcpclient.Bech32PrefixConsPub)
 	config.Seal()
 
 	mc := []sdk.ModuleClients{
