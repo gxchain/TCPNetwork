@@ -112,6 +112,9 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 	// The initChainer handles translating the genesis.json file into initial state for the network
 	app.SetInitChainer(app.initChainer)
 
+	app.SetBeginBlocker(app.BeginBlocker)
+	app.SetEndBlocker(app.EndBlocker)
+
 	app.MountStores(
 		app.keyMain,
 		app.keyAccount,
@@ -154,6 +157,24 @@ func (app *tcpApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.
 	bank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
 
 	return abci.ResponseInitChain{}
+}
+
+// BeginBlocker signals the beginning of a block. It performs application
+// updates on the start of every block.
+func (app *tcpApp) BeginBlocker(
+	_ sdk.Context, _ abci.RequestBeginBlock,
+) abci.ResponseBeginBlock {
+
+	return abci.ResponseBeginBlock{}
+}
+
+// EndBlocker signals the end of a block. It performs application updates on
+// the end of every block.
+func (app *tcpApp) EndBlocker(
+	_ sdk.Context, _ abci.RequestEndBlock,
+) abci.ResponseEndBlock {
+
+	return abci.ResponseEndBlock{}
 }
 
 // ExportAppStateAndValidators does the things

@@ -25,7 +25,7 @@ import (
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
 
-	app "github.com/gxchain/TCPNetwork"
+	app "github.com/gxchain/TCPNetwork/app"
 	tcpclient "github.com/gxchain/TCPNetwork/x/tcp/client"
 	tcprest "github.com/gxchain/TCPNetwork/x/tcp/client/rest"
 )
