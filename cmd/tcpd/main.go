@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gxchain/TCPNetwork/x/tcp"
 	"io"
 	"io/ioutil"
 	"os"
@@ -45,6 +46,13 @@ func main() {
 
 	cdc := app.MakeCodec()
 	ctx := server.NewDefaultContext()
+
+	// Read in the configuration file for the sdk
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(tcp.Bech32PrefixAccAddr, tcp.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(tcp.Bech32PrefixValAddr, tcp.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(tcp.Bech32PrefixConsAddr, tcp.Bech32PrefixConsPub)
+	config.Seal()
 
 	rootCmd := &cobra.Command{
 		Use:               "tcpd",
