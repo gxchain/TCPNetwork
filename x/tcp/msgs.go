@@ -3,6 +3,7 @@ package tcp
 import (
 	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/gxchain/TCPNetwork/types"
 )
 
 const (
@@ -34,9 +35,9 @@ type MsgContractDeploy struct {
 type MsgContractExec struct {
 	From         sdk.AccAddress
 	CID          sdk.AccAddress
-	State        []byte       // TODO
-	RequestParam RequestParam // TODO
-	Proof        []byte       // TODO
+	State        []byte             // TODO
+	RequestParam types.RequestParam // TODO
+	Proof        []byte             // TODO
 	ResultHash   []byte
 	Fee          sdk.Coins
 }
@@ -47,7 +48,7 @@ func NewMsgTransfer(from sdk.AccAddress, to sdk.AccAddress, value sdk.Coins) Msg
 		from,
 		to,
 		value,
-		sdk.Coins{sdk.NewInt64Coin(appCoin, minTransferFee)},
+		sdk.Coins{sdk.NewInt64Coin(types.appCoin, minTransferFee)},
 	}
 }
 
@@ -90,14 +91,14 @@ func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
 // NewMsgContractDeploy is a constructor function for MsgTransfer
 func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, codeHash []byte) MsgContractDeploy {
 	// create contract account
-	contractAcc := NewTCPWithDeploy(CID, code, codeHash)
+	contractAcc := types.NewTCPWithDeploy(CID, code, codeHash)
 	return MsgContractDeploy{
 		from,
 		contractAcc.Account.Address,
 		contractAcc.Code,
 		contractAcc.CodeHash,
 		[]byte{0},
-		sdk.Coins{sdk.NewInt64Coin(appCoin, minDeployFee)},
+		sdk.Coins{sdk.NewInt64Coin(types.appCoin, minDeployFee)},
 	}
 }
 
@@ -138,7 +139,7 @@ func (msg MsgContractDeploy) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgContractDeploy is a constructor function for MsgTransfer
-func NewMsgContractExec(from sdk.AccAddress, state []byte, proof []byte, resultHash []byte, req RequestParam) MsgContractExec {
+func NewMsgContractExec(from sdk.AccAddress, state []byte, proof []byte, resultHash []byte, req types.RequestParam) MsgContractExec {
 	return MsgContractExec{
 		from,
 		req.CID,
@@ -146,7 +147,7 @@ func NewMsgContractExec(from sdk.AccAddress, state []byte, proof []byte, resultH
 		req,
 		proof,
 		resultHash,
-		sdk.Coins{sdk.NewInt64Coin(appCoin, 20)}, //TODO set consume model
+		sdk.Coins{sdk.NewInt64Coin(types.appCoin, 20)}, //TODO set consume model
 	}
 }
 

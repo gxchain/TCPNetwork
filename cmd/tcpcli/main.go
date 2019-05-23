@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
+	"github.com/gxchain/TCPNetwork/types"
 	"github.com/gxchain/TCPNetwork/x/tcp"
 	"os"
 	"path"
@@ -25,7 +26,7 @@ import (
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
 
-	app "github.com/gxchain/TCPNetwork/app"
+	"github.com/gxchain/TCPNetwork/app"
 	tcpclient "github.com/gxchain/TCPNetwork/x/tcp/client"
 	tcprest "github.com/gxchain/TCPNetwork/x/tcp/client/rest"
 )
@@ -50,9 +51,9 @@ func main() {
 
 	// Read in the configuration file for the sdk
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(tcp.Bech32PrefixAccAddr, tcp.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(tcp.Bech32PrefixValAddr, tcp.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(tcp.Bech32PrefixConsAddr, tcp.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
 	config.Seal()
 
 	mc := []sdk.ModuleClients{

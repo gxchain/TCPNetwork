@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gxchain/TCPNetwork/x/tcp"
+	"github.com/gxchain/TCPNetwork/types"
 	"io"
 	"io/ioutil"
 	"os"
@@ -26,7 +26,7 @@ import (
 	gaiaInit "github.com/cosmos/cosmos-sdk/cmd/gaia/init"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	app "github.com/gxchain/TCPNetwork/app"
+	"github.com/gxchain/TCPNetwork/app"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	cfg "github.com/tendermint/tendermint/config"
@@ -49,9 +49,9 @@ func main() {
 
 	// Read in the configuration file for the sdk
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(tcp.Bech32PrefixAccAddr, tcp.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(tcp.Bech32PrefixValAddr, tcp.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(tcp.Bech32PrefixConsAddr, tcp.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
 	config.Seal()
 
 	rootCmd := &cobra.Command{

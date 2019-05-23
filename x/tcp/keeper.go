@@ -2,6 +2,7 @@ package tcp
 
 import (
 	"fmt"
+	"github.com/gxchain/TCPNetwork/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/bank"
@@ -27,12 +28,12 @@ func NewKeeper(coinKeeper bank.Keeper, storeKey sdk.StoreKey, cdc *codec.Codec) 
 }
 
 
-func (k Keeper)GetContract(ctx sdk.Context, addr sdk.AccAddress) ConAccount {
+func (k Keeper)GetContract(ctx sdk.Context, addr sdk.AccAddress) types.ConAccount {
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has([]byte(addr.Bytes())) {
-		return ConAccount{}
+		return types.ConAccount{}
 	}
-	var conA ConAccount
+	var conA types.ConAccount
 	bz := store.Get([]byte(addr.Bytes()))
 	k.cdc.MustUnmarshalBinaryBare(bz, &conA)
 	return conA
@@ -50,7 +51,7 @@ func (k Keeper) DeployContract(ctx sdk.Context, contractAddr sdk.AccAddress, con
 	if store.Has([]byte(contractAddr.Bytes())) {
 		return sdk.ErrInternal("contract address already exists")
 	}
-	conAccount := NewTCPWithDeploy(contractAddr, contactCode, contactHash)
+	conAccount := types.NewTCPWithDeploy(contractAddr, contactCode, contactHash)
 	store.Set(contractAddr.Bytes(), k.cdc.MustMarshalBinaryBare(conAccount))
 
 	fmt.Println("==========deploy contract start===========")

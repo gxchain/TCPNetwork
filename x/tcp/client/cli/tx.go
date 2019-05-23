@@ -5,6 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/gxchain/TCPNetwork/types"
 	"github.com/gxchain/TCPNetwork/x/tcp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -127,7 +128,7 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			req := tcp.RequestParam{
+			req := types.RequestParam{
 				From:  calAddr,
 				CID:   CIDAddr,
 				Proxy: fromAddr,
