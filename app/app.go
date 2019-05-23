@@ -47,7 +47,7 @@ type tcpApp struct {
 func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 
 	// First define the top level codec that will be shared by the different modules
-	cdc := MakeCodec()
+	cdc := CreateCodec()
 
 	// BaseApp handles interactions with Tendermint through the ABCI protocol
 	bApp := bam.NewBaseApp(appName, logger, db, auth.DefaultTxDecoder(cdc))
@@ -132,13 +132,6 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 	return app
 }
 
-// GenesisState represents chain state at the start of the chain. Any initial state (account balances) are stored here.
-type GenesisState struct {
-	AuthData auth.GenesisState   `json:"auth"`
-	BankData bank.GenesisState   `json:"bank"`
-	Accounts []*auth.BaseAccount `json:"accounts"`
-}
-
 func (app *tcpApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	stateJSON := req.AppStateBytes
 
@@ -208,8 +201,8 @@ func (app *tcpApp) ExportAppStateAndValidators() (appState json.RawMessage, vali
 	return appState, validators, err
 }
 
-// MakeCodec generates the necessary codecs for Amino
-func MakeCodec() *codec.Codec {
+// CreateCodec generates the necessary codecs for Amino
+func CreateCodec() *codec.Codec {
 	var cdc = codec.New()
 	auth.RegisterCodec(cdc)
 	bank.RegisterCodec(cdc)

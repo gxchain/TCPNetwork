@@ -44,7 +44,7 @@ const (
 func main() {
 	cobra.EnableCommandSorting = false
 
-	cdc := app.MakeCodec()
+	cdc := app.CreateCodec()
 	ctx := server.NewDefaultContext()
 
 	// Read in the configuration file for the sdk
