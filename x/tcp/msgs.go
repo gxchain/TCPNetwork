@@ -7,9 +7,19 @@ import (
 )
 
 const (
-	MinTransferFee = 1
-	MinDeployFee   = 10
-	MinExecFee     = 1
+	MinTransferFee       = 1
+	MinContractDeployFee = 10
+	MinContractExecFee   = 1
+)
+
+
+// message type and route constants
+const (
+	TypeMsgContractDeploy  = "tcp_deploy"
+	RouteMsgContractDeploy = "tcp_deploy"
+
+	TypeMsgContractExec  = "tcp_exec"
+	RouteMsgContractExec = "tcp_exec"
 )
 
 // MsgTransfer defines a transfer message
@@ -98,15 +108,15 @@ func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, 
 		contractAcc.Code,
 		contractAcc.CodeHash,
 		[]byte{0},
-		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, MinDeployFee)},
+		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, MinContractDeployFee)},
 	}
 }
 
 // Route should return the name of the module
-func (msg MsgContractDeploy) Route() string { return "tcp" }
+func (msg MsgContractDeploy) Route() string { return RouteMsgContractDeploy }
 
 // Type should return the action
-func (msg MsgContractDeploy) Type() string { return "contract_deploy" }
+func (msg MsgContractDeploy) Type() string { return TypeMsgContractDeploy }
 
 // ValidateBasic runs stateless checks on the message
 func (msg MsgContractDeploy) ValidateBasic() sdk.Error {
@@ -147,15 +157,15 @@ func NewMsgContractExec(from sdk.AccAddress, state []byte, proof []byte, resultH
 		req,
 		proof,
 		resultHash,
-		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, 20)}, //TODO set consume model
+		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, MinContractExecFee)}, //TODO set consume model
 	}
 }
 
 // Route should return the name of the module
-func (msg MsgContractExec) Route() string { return "tcp" }
+func (msg MsgContractExec) Route() string { return RouteMsgContractExec }
 
 // Type should return the action
-func (msg MsgContractExec) Type() string { return "contract_execute" }
+func (msg MsgContractExec) Type() string { return TypeMsgContractExec }
 
 // ValidateBasic runs stateless checks on the message
 func (msg MsgContractExec) ValidateBasic() sdk.Error {

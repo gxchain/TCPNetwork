@@ -50,7 +50,7 @@ func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy)
 		return sdk.ErrUnknownRequest("there is invalid contract or not exist").Result()
 	}
 	// check fee
-	if msg.Fee.AmountOf(types.AppCoin).Int64() < MinDeployFee {
+	if msg.Fee.AmountOf(types.AppCoin).Int64() < MinContractDeployFee {
 		return sdk.ErrInsufficientCoins("insufficient fee").Result()
 	}
 
@@ -63,7 +63,7 @@ func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy)
 
 // Handle a message to exec contract
 func handleMsgContractExec(ctx sdk.Context, keeper Keeper, msg MsgContractExec) sdk.Result {
-	if msg.Fee.AmountOf(types.AppCoin).Int64() <= MinExecFee {
+	if msg.Fee.AmountOf(types.AppCoin).Int64() <= MinContractExecFee {
 		return sdk.ErrInsufficientCoins("insufficient fee").Result()
 	}
 
