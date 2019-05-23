@@ -51,10 +51,10 @@ tcpd add-genesis-account $(tcpcli keys show jack -a) 1000nametoken,1000jackcoin
 tcpd add-genesis-account $(tcpcli keys show alice -a) 1000nametoken,1000alicecoin
 
 # Configure your CLI to eliminate need for chain-id flag
-nscli config chain-id namechain
-nscli config output json
-nscli config indent true
-nscli config trust-node true
+tcpcli config chain-id tcp-chain
+tcpcli config output json
+tcpcli config indent true
+tcpcli config trust-node true
 ```
 
 run tcpd
@@ -67,11 +67,12 @@ run tcpcli
 ```cassandraql
 # query account
 tcpcli query account $(tcpcli keys show jack -a) 
+
 tcpcli query account $(tcpcli keys show alice -a) 
 
 
 # transfer asset
- tcpcli transfer --from cosmos1vd3afehmxan7tsvqwzk5kwj7k8gh2pghgupv8z --to cosmos13skcx3v2kc4p5zkxxy73gpqq75e6g4jgelzc7f --amount 1jackcoin 
+ tcpcli transfer --from tcp1vd3afehmxan7tsvqwzk5kwj7k8gh2pghgupv8z --to tcp13skcx3v2kc4p5zkxxy73gpqq75e6g4jgelzc7f --amount 1jackcoin 
 
 ```
 
