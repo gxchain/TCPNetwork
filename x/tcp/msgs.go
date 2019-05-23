@@ -16,10 +16,10 @@ const (
 // message type and route constants
 const (
 	TypeMsgContractDeploy  = "tcp_deploy"
-	RouteMsgContractDeploy = "tcp_deploy"
+	RouteMsgContractDeploy = "tcp"
 
 	TypeMsgContractExec  = "tcp_exec"
-	RouteMsgContractExec = "tcp_exec"
+	RouteMsgContractExec = "tcp"
 )
 
 // MsgTransfer defines a transfer message

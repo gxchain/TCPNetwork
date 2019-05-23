@@ -18,7 +18,7 @@ const (
 	flagContractAddress = "conAddress"
 	flagCode            = "code"
 	flagCodeHash        = "codeHash"
-	flagCallerAddress   = "calAddress"
+	flagCallerAddress   = "callAddress"
 	flagState           = "state"
 	flagProof           = "proof"
 	flagResultHash      = "resultHash"
@@ -48,16 +48,11 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 			// get to contract address
 			CIDAddr, err := sdk.AccAddressFromBech32(contractAddress)
 			if err != nil {
+				fmt.Println("invalid contract address")
 				return err
 			}
-			// contract address must not exist
-			//err = cliCtx.EnsureAccountExistsFromAddr(CIDAddr)
+			// CIDAddress must not exist
 
-			if err != nil {
-				return err
-			} else {
-				fmt.Println("contract address must not exist")
-			}
 
 			// TODO
 			msg := tcp.NewMsgContractDeploy(fromAddr, CIDAddr, []byte(code), []byte(codeHash))
@@ -87,7 +82,7 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 // GetCmdContractExec is the CLI command for deploying contract
 func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "exec --conAddress [contract_address] --calAddress [contract_caller] --state [state]  --proof [proof] --resultHash [resultHash]",
+		Use:   "exec --conAddress [contract_address] --callAddress [contract_caller] --state [state]  --proof [proof] --resultHash [resultHash]",
 		Short: "exec contract",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
@@ -115,7 +110,7 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// get to contract address
-			calAddr, err := sdk.AccAddressFromBech32(callerAddress)
+			callAddr, err := sdk.AccAddressFromBech32(callerAddress)
 			if err != nil {
 				return err
 			}
@@ -129,7 +124,7 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			}
 
 			req := types.RequestParam{
-				From:  calAddr,
+				From:  callAddr,
 				CID:   CIDAddr,
 				Proxy: fromAddr,
 			}
@@ -159,5 +154,4 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 	cmd.MarkFlagRequired(flagResultHash)
 
 	return cmd
-
 }

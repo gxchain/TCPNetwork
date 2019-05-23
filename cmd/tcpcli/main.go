@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
-	"github.com/gxchain/TCPNetwork/types"
 	"github.com/gxchain/TCPNetwork/x/tcp"
 	"os"
 	"path"
@@ -50,11 +49,11 @@ func main() {
 	cdc := app.CreateCodec()
 
 	// Read in the configuration file for the sdk
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
-	config.Seal()
+	//config := sdk.GetConfig()
+	//config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	//config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	//config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	//config.Seal()
 
 	mc := []sdk.ModuleClients{
 		tcpclient.NewModuleClient(storeTCP, cdc),
@@ -145,15 +144,13 @@ func txCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 
 func transferCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer [from] [to] [amount]",
+		Use:   "transfer --from [fromAddress] --to [toAddress] --amount [amount]",
 		Short: "transfer asset",
 		Long: ` transfer asset from an address to another address.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
 			txBldr := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 
-
-			// from := viper.GetString(flagFrom)
 			to := viper.GetString(flagTo)
 			amount := viper.GetString(flagAmount)
 
@@ -177,7 +174,6 @@ func transferCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 				return err
 			}
 
-			// TODO
 			msg := tcp.NewMsgTransfer(fromAddr, toAddr, coins)
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -196,8 +192,6 @@ func transferCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 	cmd.MarkFlagRequired(flagFrom)
 	cmd.MarkFlagRequired(flagTo)
 	cmd.MarkFlagRequired(flagAmount)
-
-
 
 	return cmd
 }

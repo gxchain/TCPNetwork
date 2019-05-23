@@ -63,7 +63,7 @@ func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy)
 
 // Handle a message to exec contract
 func handleMsgContractExec(ctx sdk.Context, keeper Keeper, msg MsgContractExec) sdk.Result {
-	if msg.Fee.AmountOf(types.AppCoin).Int64() <= MinContractExecFee {
+	if msg.Fee.AmountOf(types.AppCoin).Int64() < MinContractExecFee {
 		return sdk.ErrInsufficientCoins("insufficient fee").Result()
 	}
 
