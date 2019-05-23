@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	minTransferFee = 1
-	minDeployFee   = 10
-	minExecFee     = 1
+	MinTransferFee = 1
+	MinDeployFee   = 10
+	MinExecFee     = 1
 )
 
 // MsgTransfer defines a transfer message
@@ -48,7 +48,7 @@ func NewMsgTransfer(from sdk.AccAddress, to sdk.AccAddress, value sdk.Coins) Msg
 		from,
 		to,
 		value,
-		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, minTransferFee)},
+		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, MinTransferFee)},
 	}
 }
 
@@ -98,7 +98,7 @@ func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, 
 		contractAcc.Code,
 		contractAcc.CodeHash,
 		[]byte{0},
-		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, minDeployFee)},
+		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, MinDeployFee)},
 	}
 }
 
