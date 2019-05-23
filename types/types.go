@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	appCoin = "nametoken"
+	AppCoin = "nametoken"
 )
 
 const (

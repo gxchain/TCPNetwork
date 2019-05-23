@@ -48,7 +48,7 @@ func NewMsgTransfer(from sdk.AccAddress, to sdk.AccAddress, value sdk.Coins) Msg
 		from,
 		to,
 		value,
-		sdk.Coins{sdk.NewInt64Coin(types.appCoin, minTransferFee)},
+		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, minTransferFee)},
 	}
 }
 
@@ -98,7 +98,7 @@ func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, 
 		contractAcc.Code,
 		contractAcc.CodeHash,
 		[]byte{0},
-		sdk.Coins{sdk.NewInt64Coin(types.appCoin, minDeployFee)},
+		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, minDeployFee)},
 	}
 }
 
@@ -147,7 +147,7 @@ func NewMsgContractExec(from sdk.AccAddress, state []byte, proof []byte, resultH
 		req,
 		proof,
 		resultHash,
-		sdk.Coins{sdk.NewInt64Coin(types.appCoin, 20)}, //TODO set consume model
+		sdk.Coins{sdk.NewInt64Coin(types.AppCoin, 20)}, //TODO set consume model
 	}
 }
 
