@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 )
 
 // Keeper maintains the link to data storage and exposes getter/setter methods for the various parts of the state machine
@@ -27,8 +26,7 @@ func NewKeeper(coinKeeper bank.Keeper, storeKey sdk.StoreKey, cdc *codec.Codec) 
 	}
 }
 
-
-func (k Keeper)GetContract(ctx sdk.Context, addr sdk.AccAddress) types.ConAccount {
+func (k Keeper) GetContract(ctx sdk.Context, addr sdk.AccAddress) types.ConAccount {
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has([]byte(addr.Bytes())) {
 		return types.ConAccount{}
@@ -39,8 +37,7 @@ func (k Keeper)GetContract(ctx sdk.Context, addr sdk.AccAddress) types.ConAccoun
 	return conA
 }
 
-
-func (k Keeper)GetResult(ctx sdk.Context, caller sdk.AccAddress, contractAddr sdk.AccAddress) []byte {
+func (k Keeper) GetResult(ctx sdk.Context, caller sdk.AccAddress, contractAddr sdk.AccAddress) []byte {
 	conA := k.GetContract(ctx, contractAddr)
 	return conA.Result[caller.String()]
 }
@@ -62,14 +59,19 @@ func (k Keeper) DeployContract(ctx sdk.Context, contractAddr sdk.AccAddress, con
 	return nil
 }
 
-func (k Keeper)SetContractState(ctx sdk.Context, contractAddr sdk.AccAddress, fromAddr sdk.AccAddress, resultHash []byte) bool {
+func (k Keeper) SetContractState(ctx sdk.Context, contractAddr sdk.AccAddress, fromAddr sdk.AccAddress, resultHash []byte) bool {
 	conA := k.GetContract(ctx, contractAddr)
 	fmt.Println("==========execute contract start===========")
 	fmt.Println("contract info:", contractAddr, conA, conA.Result)
 	fmt.Println("==========execute contract end===========")
-	conA.Result[fromAddr.String()] = resultHash
-	store := ctx.KVStore(k.storeKey)
+	fmt.Println("fromAddr", string(fromAddr), "resultHash", resultHash, "Result", conA.Result)
 
+	// maybe something is wrong here
+	//conA.Result[string(fromAddr)] = resultHash
+
+	fmt.Println("fromAddr", fromAddr, "resultHash", resultHash, "Result", conA.Result)
+
+	store := ctx.KVStore(k.storeKey)
 	store.Set(contractAddr.Bytes(), k.cdc.MustMarshalBinaryBare(conA))
 
 	return true

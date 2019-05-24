@@ -21,14 +21,14 @@ func NewTCPWithDeploy(CID sdk.AccAddress, contractCode []byte, codeHash []byte) 
 	//contractAddr := sdk.AccAddress(cAddr)
 
 	//hash and struct
-	resultSet := make(map[string][]byte)
 	account := auth.NewBaseAccountWithAddress(CID)
 	account.SetSequence(0)
+
 	ContractAcc := ConAccount{
 		Account:  account,
 		Code:     contractCode,
 		CodeHash: codeHash,
-		Result:   resultSet,
+		Result:   make(map[string][]byte),
 	}
 	return ContractAcc
 }
