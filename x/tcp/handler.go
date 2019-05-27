@@ -35,7 +35,14 @@ func handleMsgTransfer(ctx sdk.Context, keeper Keeper, msg MsgTransfer) sdk.Resu
 		return sdk.ErrInsufficientCoins("insufficient fee").Result()
 	}
 
-	_, err := keeper.coinKeeper.SendCoins(ctx, msg.From, msg.To, msg.Value)
+	// substract fee
+	_, _, err := keeper.coinKeeper.SubtractCoins(ctx, msg.From, msg.Fee)
+	if err != nil {
+		return sdk.ErrInsufficientCoins("does not have enough coins for fee").Result()
+	}
+
+	// transfer asset
+	_, err = keeper.coinKeeper.SendCoins(ctx, msg.From, msg.To, msg.Value)
 	if err != nil {
 		return sdk.ErrInsufficientCoins("does not have enough coins").Result()
 	}
@@ -54,7 +61,13 @@ func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy)
 		return sdk.ErrInsufficientCoins("insufficient fee").Result()
 	}
 
-	err := keeper.DeployContract(ctx, msg.CID, msg.Code, msg.CodeHash)
+	// substract fee
+	_, _, err := keeper.coinKeeper.SubtractCoins(ctx, msg.From, msg.Fee)
+	if err != nil {
+		return sdk.ErrInsufficientCoins("does not have enough coins for fee").Result()
+	}
+
+	err = keeper.DeployContract(ctx, msg.CID, msg.Code, msg.CodeHash)
 	if err != nil {
 		return err.Result()
 	}
@@ -63,8 +76,26 @@ func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy)
 
 // Handle a message to exec contract
 func handleMsgContractExec(ctx sdk.Context, keeper Keeper, msg MsgContractExec) sdk.Result {
+
+	// validate request signature
+	// TODO
+
+
+	// check fee
 	if msg.Fee.AmountOf(types.AppCoin).Int64() < MinContractExecFee {
 		return sdk.ErrInsufficientCoins("insufficient fee").Result()
+	}
+
+	// substract fee
+	_, _, err := keeper.coinKeeper.SubtractCoins(ctx, msg.From, msg.Fee)
+	if err != nil {
+		return sdk.ErrInsufficientCoins("does not have enough coins for fee").Result()
+	}
+
+	// adjust balance
+	_, err = keeper.coinKeeper.SendCoins(ctx, msg.RequestParam.From, msg.RequestParam.Proxy, msg.RequestParam.Fee)
+	if err != nil {
+		return sdk.ErrInsufficientCoins("does not have enough coins").Result()
 	}
 
 	keeper.SetContractState(ctx, msg.CID, msg.From, msg.ResultHash[:])
