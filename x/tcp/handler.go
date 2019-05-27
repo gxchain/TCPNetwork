@@ -30,6 +30,7 @@ func handleMsgTransfer(ctx sdk.Context, keeper Keeper, msg MsgTransfer) sdk.Resu
 	if !msg.Value.IsValid() {
 		return sdk.ErrInsufficientCoins("invalid coins").Result()
 	}
+
 	// check fee
 	if msg.Fee.AmountOf(types.AppCoin).Int64() < MinTransferFee {
 		return sdk.ErrInsufficientCoins("insufficient fee").Result()
