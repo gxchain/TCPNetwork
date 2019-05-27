@@ -169,9 +169,19 @@ func (msg MsgContractExec) Type() string { return TypeMsgContractExec }
 
 // ValidateBasic runs stateless checks on the message
 func (msg MsgContractExec) ValidateBasic() sdk.Error {
+	// check address
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress(msg.From.String())
 	}
+	// check address
+	if msg.RequestParam.From.Empty() {
+		return sdk.ErrInvalidAddress(msg.RequestParam.From.String())
+	}
+	// check address
+	if msg.RequestParam.Proxy.Empty() {
+		return sdk.ErrInvalidAddress(msg.RequestParam.Proxy.String())
+	}
+
 	//TODO validate the CID whether is the right Contract.
 	if msg.CID.Empty() {
 		return sdk.ErrUnknownRequest("Contract cannot be nil")
