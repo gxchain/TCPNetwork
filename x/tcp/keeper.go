@@ -1,7 +1,6 @@
 package tcp
 
 import (
-	"fmt"
 	"github.com/gxchain/TCPNetwork/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -38,8 +37,8 @@ func (k Keeper) GetContract(ctx sdk.Context, addr sdk.AccAddress) types.ConAccou
 }
 
 func (k Keeper) GetResult(ctx sdk.Context, caller sdk.AccAddress, contractAddr sdk.AccAddress) string{
-	//conA := k.GetContract(ctx, contractAddr)
-	return ""
+	conA := k.GetContract(ctx, contractAddr)
+	return conA.ExecResult(caller)
 }
 
 func (k Keeper) DeployContract(ctx sdk.Context, contractAddr sdk.AccAddress, contactCode []byte, contactHash []byte) sdk.Error {
@@ -50,27 +49,27 @@ func (k Keeper) DeployContract(ctx sdk.Context, contractAddr sdk.AccAddress, con
 	}
 	conAccount := types.NewTCPWithDeploy(contractAddr, contactCode, contactHash)
 	store.Set(contractAddr.Bytes(), k.cdc.MustMarshalBinaryBare(conAccount))
-
-	fmt.Println("==========deploy contract start===========")
-	fmt.Println("conAccount info:", conAccount)
-	account := k.GetContract(ctx, contractAddr)
-	fmt.Println("deploy contract:", account)
-	fmt.Println("==========deploy contract end===========")
+	//
+	//fmt.Println("==========deploy contract start===========")
+	//fmt.Println("conAccount info:", conAccount)
+	//account := k.GetContract(ctx, contractAddr)
+	//fmt.Println("deploy contract:", account)
+	//fmt.Println("==========deploy contract end===========")
 	return nil
 }
 
 func (k Keeper) SetContractState(ctx sdk.Context, contractAddr sdk.AccAddress, fromAddr sdk.AccAddress, resultHash []byte) bool {
 	conA := k.GetContract(ctx, contractAddr)
-	fmt.Println("==========execute contract start===========")
-	fmt.Println("contract info:", contractAddr.String(), conA, conA.Result)
-
-	fmt.Println("fromAddr1", fromAddr.String(), "resultHash", resultHash, "Result", conA.Result)
-	fmt.Println("==========execute contract end===========")
+	//fmt.Println("==========execute contract start===========")
+	//fmt.Println("contract info:", contractAddr.String(), conA, conA.Result)
+	//
+	//fmt.Println("fromAddr1", fromAddr.String(), "resultHash", resultHash, "Result", conA.Result)
+	//fmt.Println("==========execute contract end===========")
 	conA.Add(fromAddr, resultHash)
-	fmt.Println("==========execute contract add===========")
-	fmt.Println("fromAddr2", fromAddr.String(), "resultHash", resultHash, "Result", conA.Result)
+	//fmt.Println("==========execute contract add===========")
+	//fmt.Println("fromAddr2", fromAddr.String(), "resultHash", resultHash, "Result", conA.Result)
 	store := ctx.KVStore(k.storeKey)
 	store.Set(contractAddr.Bytes(), k.cdc.MustMarshalBinaryBare(conA))
-	fmt.Println("==========execute contract store===========")
+	//fmt.Println("==========execute contract store===========")
 	return true
 }

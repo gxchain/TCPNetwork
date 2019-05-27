@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"fmt"
 	"encoding/json"
 )
 
@@ -37,7 +36,6 @@ func (ca *ConAccount)Add(account sdk.AccAddress,result []byte) bool {
 	//if ca.Contains(key) {
 	//	return false
 	//}
-	fmt.Println("=========test Add method start========, result", ca.Result)
 	temp, err := ca.convertToMap()
 	if err != nil {
 		return false
@@ -47,8 +45,6 @@ func (ca *ConAccount)Add(account sdk.AccAddress,result []byte) bool {
 	if err != nil {
 		return false
 	}
-	fmt.Println("=========test Add method end========")
-
 	return true
 }
 
@@ -57,12 +53,25 @@ func (ca *ConAccount)Remove(result []byte) {
 }
 
 func (ca ConAccount)Contains(account string) bool {
-	//_, ok := ca.Result[account]
-	return true
+	dataMap, err := ca.convertToMap()
+	if err != nil {
+		return false
+	}
+	_, ok := dataMap[account]
+	return ok
 }
 
 func (ca ConAccount)String(result []byte) string {
 	return ""
+}
+
+func (ca ConAccount)ExecResult(caller sdk.AccAddress) string {
+	data, err := ca.convertToMap()
+	if err != nil {
+		return ""
+	}
+	result, _ := data[caller.String()]
+	return result
 }
 
 func (ca ConAccount)convertToMap() (map[string]string, error) {
