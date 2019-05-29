@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gxchain/TCPNetwork/types"
 	"io"
 	"io/ioutil"
 	"os"
@@ -41,26 +42,26 @@ const (
 )
 
 func main() {
-	cobra.EnableCommandSorting = false
-
 	cdc := app.CreateCodec()
-	ctx := server.NewDefaultContext()
 
 	// Read in the configuration file for the sdk
-	//config := sdk.GetConfig()
-	//config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	//config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	//config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
-	//config.Seal()
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	config.Seal()
 
+	ctx := server.NewDefaultContext()
+	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "tcpd",
-		Short:             "tcp App Daemon (server)",
+		Short:             "tcp Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
 	rootCmd.AddCommand(InitCmd(ctx, cdc))
 	rootCmd.AddCommand(AddGenesisAccountCmd(ctx, cdc))
+
 	server.AddCommands(ctx, cdc, rootCmd, newApp, appExporter())
 
 	// prepare and add flags

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
+	"github.com/gxchain/TCPNetwork/types"
 	"github.com/gxchain/TCPNetwork/x/tcp"
 	"os"
 	"path"
@@ -49,11 +50,11 @@ func main() {
 	cdc := app.CreateCodec()
 
 	// Read in the configuration file for the sdk
-	//config := sdk.GetConfig()
-	//config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	//config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	//config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
-	//config.Seal()
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	config.Seal()
 
 	mc := []sdk.ModuleClients{
 		tcpclient.NewModuleClient(storeTCP, cdc),
