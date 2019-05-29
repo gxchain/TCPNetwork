@@ -41,10 +41,6 @@ func queryContractCodeHandle(cdc *codec.Codec, cliCtx context.CLIContext, storeN
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		address := vars[restName]
-
-		fmt.Println("+++++++++++++++",vars,"!!!!!!!!!!!!!!!")
-		fmt.Printf("custom/%s/code/%s", storeName, address)
-		fmt.Println("==============end==============")
 		res, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/code/%s", storeName, address), nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())

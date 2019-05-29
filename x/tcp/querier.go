@@ -4,7 +4,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"fmt"
 )
 
 const (
@@ -24,9 +23,6 @@ func (r QueryResContractCode) String() string {
 // NewQuerier is the module level router for state queries
 func NewQuerier(keeper Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) (res []byte, err sdk.Error) {
-		fmt.Println("+++++++++++++++start!!!!!!!!!!!!!!!")
-		fmt.Println(path)
-		fmt.Println("==============end==============")
 		switch path[0] {
 		case QueryContractCode:
 			return queryContractCode(ctx, path[1:], req, keeper)
