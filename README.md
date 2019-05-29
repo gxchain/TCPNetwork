@@ -77,7 +77,29 @@ tcpcli query account $(tcpcli keys show alice -a)
 ```
 
 
+query account
+```cassandraql
+curl -s http://localhost:1317auth/accounts/$(tcpcli keys show jack -a)
+```
 
 
+deploy contract
+
+```cassandraql
+tcpcli tcp deploy --conAddress cosmos1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s --code aaaa --codeHash aaaa --from cosmos1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39
+
+```
 
 
+query contract code
+```cassandraql
+
+curl -s http://localhost:1317tcp/contracts/cosmos1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s
+```
+
+contract exec
+
+```cassandraql
+tcpcli tcp exec --conAddress cosmos1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s --callAddress cosmos1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39 --state aaaa --proof aaaa --resultHash aaaa --from cosmos1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39
+
+```
