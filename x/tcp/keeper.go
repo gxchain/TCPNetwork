@@ -73,3 +73,8 @@ func (k Keeper) SetContractState(ctx sdk.Context, contractAddr sdk.AccAddress, f
 	//fmt.Println("==========execute contract store===========")
 	return true
 }
+
+func (k Keeper)	GetContractAccountsIterator(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, nil)
+}
