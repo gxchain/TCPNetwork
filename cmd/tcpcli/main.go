@@ -106,7 +106,7 @@ func queryCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 	queryCmd := &cobra.Command{
 		Use:     "query",
 		Aliases: []string{"q"},
-		Short:   "Querying subcommands",
+		Short:   "Querying subCommands",
 	}
 
 	queryCmd.AddCommand(
