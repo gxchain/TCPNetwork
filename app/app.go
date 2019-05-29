@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -29,6 +28,7 @@ type tcpApp struct {
 	*bam.BaseApp
 	cdc *codec.Codec
 
+	// keys to access the substores
 	keyMain          *sdk.KVStoreKey
 	keyAccount       *sdk.KVStoreKey
 	keyTCP           *sdk.KVStoreKey
@@ -36,6 +36,7 @@ type tcpApp struct {
 	keyParams        *sdk.KVStoreKey
 	tkeyParams       *sdk.TransientStoreKey
 
+	// keepers
 	accountKeeper       auth.AccountKeeper
 	bankKeeper          bank.Keeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
@@ -57,17 +58,26 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 		BaseApp: bApp,
 		cdc:     cdc,
 
-		keyMain:          sdk.NewKVStoreKey("main"),
-		keyAccount:       sdk.NewKVStoreKey("acc"),
 		keyTCP:           sdk.NewKVStoreKey("tcp"),
-		keyFeeCollection: sdk.NewKVStoreKey("fee_collection"),
-		keyParams:        sdk.NewKVStoreKey("params"),
-		tkeyParams:       sdk.NewTransientStoreKey("transient_params"),
+		keyMain:          sdk.NewKVStoreKey(bam.MainStoreKey),
+		keyAccount:       sdk.NewKVStoreKey(auth.StoreKey),
+		//keyStaking:       sdk.NewKVStoreKey(staking.StoreKey),
+		//tkeyStaking:      sdk.NewTransientStoreKey(staking.TStoreKey),
+		//keyMint:          sdk.NewKVStoreKey(mint.StoreKey),
+		//keyDistr:         sdk.NewKVStoreKey(distr.StoreKey),
+		//tkeyDistr:        sdk.NewTransientStoreKey(distr.TStoreKey),
+		//keySlashing:      sdk.NewKVStoreKey(slashing.StoreKey),
+		//keyGov:           sdk.NewKVStoreKey(gov.StoreKey),
+		keyFeeCollection: sdk.NewKVStoreKey(auth.FeeStoreKey),
+		keyParams:        sdk.NewKVStoreKey(params.StoreKey),
+		tkeyParams:       sdk.NewTransientStoreKey(params.TStoreKey),
 	}
 
+	// init params keeper
 	// The ParamsKeeper handles parameter storage for the application
 	app.paramsKeeper = params.NewKeeper(app.cdc, app.keyParams, app.tkeyParams)
 
+	// add keepers
 	// The AccountKeeper handles address -> account lookups
 	app.accountKeeper = auth.NewAccountKeeper(
 		app.cdc,
