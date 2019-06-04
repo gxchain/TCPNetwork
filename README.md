@@ -84,10 +84,67 @@ tcpcli tcp deploy --conAddress tcp1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s --code
 
 ```
 
+response:
+```
+zhuliting-2:gxb-core zhuliting$ tcpcli tcp deploy --conAddress tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86 --code "code-x" --codeHash aaaa  --from tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk
+{"chain_id":"tcp-chain","account_number":"0","sequence":"0","fee":{"amount":null,"gas":"200000"},"msgs":[{"type":"tcp/deploy","value":{"From":"tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk","CID":"tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86","Code":"Y29kZS14","CodeHash":"YWFhYQ==","State":"AA==","Fee":[{"denom":"nametoken","amount":"10"}]}}],"memo":""}
+
+confirm transaction before signing and broadcasting [Y/n]: y
+Password to sign with 'jack':
+{
+ "height": "21",
+ "txhash": "0571504B293E9A3A017CDCA336315E7931DF5289EB5364287377F04610031962",
+ "logs": [
+  {
+   "msg_index": "0",
+   "success": true,
+   "log": ""
+  }
+ ],
+ "gas_wanted": "200000",
+ "gas_used": "21779",
+ "tags": [
+  {
+   "key": "action",
+   "value": "tcp_deploy"
+  }
+ ]
+}
+```
+
 contract exec
 
 ```cassandraql
 tcpcli tcp exec --conAddress tcp1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s --callAddress tcp1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39 --state aaaa --proof aaaa --resultHash aaaa --from tcp1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39
+
+```
+response:
+```
+zhuliting-2:gxb-core zhuliting$ tcpcli tcp exec --conAddress tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86 --callAddress tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk --state "state" --proof "proof" --resultHash "result-hash" --from tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk
+{"chain_id":"tcp-chain","account_number":"0","sequence":"1","fee":{"amount":null,"gas":"200000"},"msgs":[{"type":"tcp/exec","value":{"From":"tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk","CID":"tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86","State":"c3RhdGU=","RequestParam":{"from":"tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk","cid":"tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86","proxy":"tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk","dataSource":null,"fee":null,"signature":null},"Proof":"cHJvb2Y=","ResultHash":"cmVzdWx0LWhhc2g=","Fee":[{"denom":"nametoken","amount":"1"}]}}],"memo":""}
+
+confirm transaction before signing and broadcasting [Y/n]: y
+Password to sign with 'jack':
+{
+ "height": "51",
+ "txhash": "757FB1FFD24D869C8F3F2263373CA49DDB559FFA16C89F8DE11939D7062732AB",
+ "data": "cmVzdWx0LWhhc2g=",
+ "logs": [
+  {
+   "msg_index": "0",
+   "success": true,
+   "log": ""
+  }
+ ],
+ "gas_wanted": "200000",
+ "gas_used": "41069",
+ "tags": [
+  {
+   "key": "action",
+   "value": "tcp_exec"
+  }
+ ]
+}
 
 ```
 
