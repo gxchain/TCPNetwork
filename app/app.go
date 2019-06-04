@@ -2,11 +2,17 @@ package app
 
 import (
 	"encoding/json"
+	"github.com/cosmos/cosmos-sdk/x/gov"
+	"github.com/cosmos/cosmos-sdk/x/mint"
+	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+
 	"github.com/cosmos/cosmos-sdk/x/bank"
+
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
@@ -22,6 +28,11 @@ import (
 
 const (
 	appName = "tcp"
+	TCPStoreKey = "tcp"
+
+	// The ModuleBasicManager is in charge of setting up basic,
+	// non-dependant module elements, such as codec registration
+	// and genesis verification.
 )
 
 type tcpApp struct {
@@ -31,6 +42,14 @@ type tcpApp struct {
 	// keys to access the substores
 	keyMain          *sdk.KVStoreKey
 	keyAccount       *sdk.KVStoreKey
+	keyStaking       *sdk.KVStoreKey
+	tkeyStaking      *sdk.TransientStoreKey
+	keuySlashing	 *sdk.KVStore
+
+	keyDistr         *sdk.KVStoreKey
+	tkeyDistr        *sdk.TransientStoreKey
+
+	keyGov			 *sdk.KVStore
 	keyTCP           *sdk.KVStoreKey
 	keyFeeCollection *sdk.KVStoreKey
 	keyParams        *sdk.KVStoreKey
@@ -38,10 +57,20 @@ type tcpApp struct {
 
 	// keepers
 	accountKeeper       auth.AccountKeeper
-	bankKeeper          bank.Keeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
+
+	bankKeeper          bank.Keeper
+	stakingKeeper       staking.Keeper
+	slashingKeeper 		slashing.Keeper
+
+	distrKeeper         distr.Keeper
+	govKeeper 			gov.Keeper
+
 	paramsKeeper        params.Keeper
 	tcpKeeper           tcp.Keeper
+
+	// the module manager
+	mm *sdk.ModuleManager
 }
 
 // NewTCPApp is a constructor function for tcpApp
@@ -58,13 +87,13 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 		BaseApp: bApp,
 		cdc:     cdc,
 
-		keyTCP:           sdk.NewKVStoreKey("tcp"),
+		keyTCP:           sdk.NewKVStoreKey(TCPStoreKey),
 		keyMain:          sdk.NewKVStoreKey(bam.MainStoreKey),
 		keyAccount:       sdk.NewKVStoreKey(auth.StoreKey),
-		//keyStaking:       sdk.NewKVStoreKey(staking.StoreKey),
-		//tkeyStaking:      sdk.NewTransientStoreKey(staking.TStoreKey),
+		keyStaking:       sdk.NewKVStoreKey(staking.StoreKey),
+		tkeyStaking:      sdk.NewTransientStoreKey(staking.TStoreKey),
 		//keyMint:          sdk.NewKVStoreKey(mint.StoreKey),
-		//keyDistr:         sdk.NewKVStoreKey(distr.StoreKey),
+		keyDistr:         sdk.NewKVStoreKey(distr.StoreKey),
 		//tkeyDistr:        sdk.NewTransientStoreKey(distr.TStoreKey),
 		//keySlashing:      sdk.NewKVStoreKey(slashing.StoreKey),
 		//keyGov:           sdk.NewKVStoreKey(gov.StoreKey),
@@ -96,6 +125,9 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 	// The FeeCollectionKeeper collects transaction fees and renders them to the fee distribution module
 	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(cdc, app.keyFeeCollection)
 
+	app.stakingKeeper = staking.NewKeeper(app.cdc, app.keyStaking, app.tkeyStaking, app.bankKeeper,
+		app.paramsKeeper.Subspace(staking.DefaultParamspace), staking.DefaultCodespace)
+
 	// The TCPKeeper is the Keeper from the module for this tutorial
 	// It handles interactions with the tcp
 	app.tcpKeeper = tcp.NewKeeper(
@@ -104,8 +136,12 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 		app.cdc,
 	)
 
-	// The AnteHandler handles signature verification and transaction pre-processing
-	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.feeCollectionKeeper))
+	// register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	//app.stakingKeeper = *stakingKeeper.SetHooks(
+	//	staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()))
+
+
 
 	// The app.Router is the main transaction router where each module registers its routes
 	// Register the bank and tcp routes here
@@ -121,9 +157,10 @@ func NewTCPApp(logger log.Logger, db dbm.DB) *tcpApp {
 
 	// The initChainer handles translating the genesis.json file into initial state for the network
 	app.SetInitChainer(app.initChainer)
-
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
+	// The AnteHandler handles signature verification and transaction pre-processing
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.feeCollectionKeeper))
 
 	app.MountStores(
 		app.keyMain,
@@ -151,6 +188,7 @@ func (app *tcpApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.
 		panic(err)
 	}
 
+	// load the accounts
 	for _, acc := range genesisState.Accounts {
 		acc.AccountNumber = app.accountKeeper.GetNextAccountNumber(ctx)
 		app.accountKeeper.SetAccount(ctx, acc)
@@ -160,24 +198,6 @@ func (app *tcpApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.
 	bank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
 
 	return abci.ResponseInitChain{}
-}
-
-// BeginBlocker signals the beginning of a block. It performs application
-// updates on the start of every block.
-func (app *tcpApp) BeginBlocker(
-	_ sdk.Context, _ abci.RequestBeginBlock,
-) abci.ResponseBeginBlock {
-
-	return abci.ResponseBeginBlock{}
-}
-
-// EndBlocker signals the end of a block. It performs application updates on
-// the end of every block.
-func (app *tcpApp) EndBlocker(
-	_ sdk.Context, _ abci.RequestEndBlock,
-) abci.ResponseEndBlock {
-
-	return abci.ResponseEndBlock{}
 }
 
 // ExportAppStateAndValidators does the things
@@ -211,14 +231,52 @@ func (app *tcpApp) ExportAppStateAndValidators() (appState json.RawMessage, vali
 	return appState, validators, err
 }
 
+func init() {
+	ModuleBasics = sdk.NewModuleBasicManager(
+		genutil.AppModuleBasic{},
+		auth.AppModuleBasic{},
+		bank.AppModuleBasic{},
+		staking.AppModuleBasic{},
+		distr.AppModuleBasic{},
+		gov.AppModuleBasic{},
+		params.AppModuleBasic{},
+		slashing.AppModuleBasic{},
+	)
+}
+
 // CreateCodec generates the necessary codecs for Amino
 func CreateCodec() *codec.Codec {
-	var cdc = codec.New()
-	auth.RegisterCodec(cdc)
-	bank.RegisterCodec(cdc)
-	tcp.RegisterCodec(cdc)
-	staking.RegisterCodec(cdc)
-	sdk.RegisterCodec(cdc)
-	codec.RegisterCrypto(cdc)
-	return cdc
+	var cds = codec.New()
+	MOduleBasics.Re
+	//var cdc = codec.New()
+	//auth.RegisterCodec(cdc)
+	//bank.RegisterCodec(cdc)
+	//tcp.RegisterCodec(cdc)
+	//staking.RegisterCodec(cdc)
+	//sdk.RegisterCodec(cdc)
+	//codec.RegisterCrypto(cdc)
+	//return cdc
+}
+
+// BeginBlocker signals the beginning of a block. It performs application
+// updates on the start of every block.
+func (app *tcpApp) BeginBlocker(
+	_ sdk.Context, _ abci.RequestBeginBlock,
+) abci.ResponseBeginBlock {
+
+	return abci.ResponseBeginBlock{}
+}
+
+// EndBlocker signals the end of a block. It performs application updates on
+// the end of every block.
+func (app *tcpApp) EndBlocker(
+	_ sdk.Context, _ abci.RequestEndBlock,
+) abci.ResponseEndBlock {
+
+	return abci.ResponseEndBlock{}
+}
+
+// load a particular height
+func (app *tcpApp) LoadHeight(height int64) error {
+	return app.LoadVersion(height, app.keyMain)
 }

@@ -25,6 +25,9 @@ import (
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
+	st "github.com/cosmos/cosmos-sdk/x/staking"
+	stakingclient "github.com/cosmos/cosmos-sdk/x/staking/client"
+	staking "github.com/cosmos/cosmos-sdk/x/staking/client/rest"
 
 	"github.com/gxchain/TCPNetwork/app"
 	tcpclient "github.com/gxchain/TCPNetwork/x/tcp/client"
@@ -57,6 +60,7 @@ func main() {
 	config.Seal()
 
 	mc := []sdk.ModuleClients{
+		stakingclient.NewModuleClient(st.StoreKey, cdc),
 		tcpclient.NewModuleClient(storeTCP, cdc),
 	}
 
@@ -100,6 +104,7 @@ func registerRoutes(rs *lcd.RestServer) {
 	tx.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc)
 	auth.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, storeAcc)
 	bank.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
+	staking.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
 	tcprest.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, storeTCP)
 }
 
