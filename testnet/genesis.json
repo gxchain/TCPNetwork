@@ -1,0 +1,59 @@
+{
+  "genesis_time": "2019-06-05T07:00:10.931044752Z",
+  "chain_id": "tcp-chain",
+  "consensus_params": {
+    "block_size": {
+      "max_bytes": "22020096",
+      "max_gas": "-1"
+    },
+    "evidence": {
+      "max_age": "100000"
+    },
+    "validator": {
+      "pub_key_types": [
+        "ed25519"
+      ]
+    }
+  },
+  "validators": [
+    {
+      "address": "83A9C8B60C133720C9CA170C5111FE72D47054BC",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "RqURZOsxvvkWwK2lA0x+40nncwN/N7TnokzNh45uoz0="
+      },
+      "power": "10",
+      "name": ""
+    }
+  ],
+  "app_hash": "",
+  "app_state": {
+    "auth": {
+      "collected_fees": null,
+      "params": {
+        "max_memo_characters": "256",
+        "tx_sig_limit": "7",
+        "tx_size_cost_per_byte": "10",
+        "sig_verify_cost_ed25519": "590",
+        "sig_verify_cost_secp256k1": "1000"
+      }
+    },
+    "bank": {
+      "send_enabled": true
+    },
+    "accounts": [
+      {
+        "address": "tcp1zxsps8kjj4eym6su8e34ny9efrd6cgwag8u0k6",
+        "coins": [
+          {
+            "denom": "nametoken",
+            "amount": "100000000"
+          }
+        ],
+        "public_key": null,
+        "account_number": "0",
+        "sequence": "0"
+      }
+    ]
+  }
+}
