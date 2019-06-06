@@ -164,8 +164,8 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 				From:        callAddr,
 				CID:         CIDAddr,
 				Proxy:       fromAddr,
-				// DataSources: []types.Amount,
-				Fee:         sdk.Coins{sdk.NewInt64Coin(types.AppCoin, 1)},
+				DataSources: []types.Amount{},
+				Fee:         sdk.Coins{sdk.NewInt64Coin(types.AppCoin, 10)},
 				Sig:         []byte(promise),
 			}
 

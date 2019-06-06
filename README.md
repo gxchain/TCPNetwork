@@ -114,7 +114,7 @@ Password to sign with 'jack':
 contract exec
 
 ```cassandraql
-tcpcli tcp exec --conAddress tcp1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s --callAddress tcp1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39 --state aaaa --proof aaaa --resultHash aaaa --from tcp1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39
+tcpcli tcp exec --conAddress tcp1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s --callAddress tcp1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39 --state aaaa --proof aaaa --resultHash aaaa --from tcp1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39 --promise "promise"
 
 ```
 response:
