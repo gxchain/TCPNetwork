@@ -25,7 +25,7 @@ const (
 	flagState           = "state"
 	flagProof           = "proof"
 	flagResultHash      = "resultHash"
-	flatPromise			= "promise"
+	flagPromise			= "promise"
 )
 
 // GetCmdContractDeploy is the CLI command for deploying contract
@@ -129,7 +129,7 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			state := viper.GetString(flagState)
 			proof := viper.GetString(flagProof)
 			resultHash := viper.GetString(flagResultHash)
-			promise := viper.GetString(flatPromise)
+			promise := viper.GetString(flagPromise)
 
 			if err := cliCtx.EnsureAccountExists(); err != nil {
 				fmt.Println("from account not exists")
@@ -186,12 +186,14 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 	cmd.Flags().StringP(flagState, "s", "", "contract state")
 	cmd.Flags().StringP(flagProof, "p", "", "contract proof")
 	cmd.Flags().StringP(flagResultHash, "r", "", "contract exec result hash")
+	cmd.Flags().String(flagPromise, "", "signature")
 
 	cmd.MarkFlagRequired(flagContractAddress)
 	cmd.MarkFlagRequired(flagCallerAddress)
 	cmd.MarkFlagRequired(flagState)
 	cmd.MarkFlagRequired(flagProof)
 	cmd.MarkFlagRequired(flagResultHash)
+	cmd.MarkFlagRequired(flagPromise)
 
 	return cmd
 }
