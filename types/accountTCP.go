@@ -1,19 +1,21 @@
 package types
 
 import (
+	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"encoding/json"
 )
 
 type ConAccount struct {
-	Account  auth.BaseAccount  `json:"account"`
-	Code     []byte            `json:"code"`
-	CodeHash []byte            `json:"code_hash"`
-	Result   []byte 		   `json:"result"`
+	Account     auth.BaseAccount `json:"account"`
+	Code        []byte           `json:"code"`
+	CodeHash    []byte           `json:"code_hash"`
+	Targets     []sdk.AccAddress `json:"targets"` // only Targets can call contract
+	DataSources []sdk.AccAddress `json:"data_sources"`
+	Result      []byte           `json:"result"`
 }
 
-func NewTCPWithDeploy(CID sdk.AccAddress, contractCode []byte, codeHash []byte) ConAccount {
+func NewTCPWithDeploy(CID sdk.AccAddress, code []byte, codeHash []byte, targets []sdk.AccAddress, dataSources []sdk.AccAddress) ConAccount {
 	//hash and struct
 	account := auth.NewBaseAccountWithAddress(CID)
 	account.SetSequence(0)
@@ -24,8 +26,10 @@ func NewTCPWithDeploy(CID sdk.AccAddress, contractCode []byte, codeHash []byte) 
 	}
 	return ConAccount{
 		Account:  account,
-		Code:     contractCode,
+		Code:     code,
 		CodeHash: codeHash,
+		Targets: targets,
+		DataSources:dataSources,
 		Result:   initBytes,
 	}
 

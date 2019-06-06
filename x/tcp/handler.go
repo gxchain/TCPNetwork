@@ -68,7 +68,7 @@ func handleContractDeploy(ctx sdk.Context, keeper Keeper, msg MsgContractDeploy)
 		return sdk.ErrInsufficientCoins("does not have enough coins for fee").Result()
 	}
 
-	err = keeper.DeployContract(ctx, msg.CID, msg.Code, msg.CodeHash)
+	err = keeper.DeployContract(ctx, msg.CID, msg.Code, msg.CodeHash, msg.Targets, msg.DataSources)
 	if err != nil {
 		return err.Result()
 	}

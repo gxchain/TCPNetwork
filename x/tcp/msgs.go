@@ -12,7 +12,6 @@ const (
 	MinContractExecFee   = 1
 )
 
-
 // message type and route constants
 const (
 	TypeMsgContractDeploy  = "tcp_deploy"
@@ -33,15 +32,17 @@ type MsgTransfer struct {
 
 // MsgContractDeploy defines a ContractDeploy message
 type MsgContractDeploy struct {
-	From     sdk.AccAddress
-	CID      sdk.AccAddress
-	Code     []byte
-	CodeHash []byte
-	State    []byte // TODO
-	Fee      sdk.Coins
+	From        sdk.AccAddress
+	CID         sdk.AccAddress
+	Targets     []sdk.AccAddress // only Targets can call contract
+	DataSources []sdk.AccAddress
+	Code        []byte
+	CodeHash    []byte
+	State       []byte // TODO
+	Fee         sdk.Coins
 }
 
-// MsgContractExec defines a ontractExec message
+// MsgContractExec defines a contractExec message
 type MsgContractExec struct {
 	From         sdk.AccAddress
 	CID          sdk.AccAddress
@@ -99,12 +100,14 @@ func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgContractDeploy is a constructor function for MsgTransfer
-func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, code []byte, codeHash []byte) MsgContractDeploy {
+func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, targets []sdk.AccAddress, dataSources []sdk.AccAddress, code []byte, codeHash []byte) MsgContractDeploy {
 	// create contract account
 	contractAcc := types.NewTCPWithDeploy(CID, code, codeHash)
 	return MsgContractDeploy{
 		from,
 		contractAcc.Account.Address,
+		targets,
+		dataSources,
 		contractAcc.Code,
 		contractAcc.CodeHash,
 		[]byte{0},

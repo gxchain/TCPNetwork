@@ -41,13 +41,13 @@ func (k Keeper) GetResult(ctx sdk.Context, caller sdk.AccAddress, contractAddr s
 	return conA.ExecResult(caller)
 }
 
-func (k Keeper) DeployContract(ctx sdk.Context, contractAddr sdk.AccAddress, contactCode []byte, contactHash []byte) sdk.Error {
+func (k Keeper) DeployContract(ctx sdk.Context, contractAddr sdk.AccAddress, contactCode []byte, contactHash []byte, targets []sdk.AccAddress, dataSources []sdk.AccAddress) sdk.Error {
 	// if there is a contract exist, cannot deploy contract.
 	store := ctx.KVStore(k.storeKey)
 	if store.Has([]byte(contractAddr.Bytes())) {
 		return sdk.ErrInternal("contract address already exists")
 	}
-	conAccount := types.NewTCPWithDeploy(contractAddr, contactCode, contactHash)
+	conAccount := types.NewTCPWithDeploy(contractAddr, contactCode, contactHash, targets, dataSources)
 	store.Set(contractAddr.Bytes(), k.cdc.MustMarshalBinaryBare(conAccount))
 	//
 	//fmt.Println("==========deploy contract start===========")

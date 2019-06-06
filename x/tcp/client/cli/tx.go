@@ -22,6 +22,7 @@ const (
 	flagState           = "state"
 	flagProof           = "proof"
 	flagResultHash      = "resultHash"
+	flatPromise			= "promise"
 )
 
 // GetCmdContractDeploy is the CLI command for deploying contract
@@ -82,7 +83,7 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 // GetCmdContractExec is the CLI command for deploying contract
 func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "exec --conAddress [contract_address] --callAddress [contract_caller] --state [state]  --proof [proof] --resultHash [resultHash]",
+		Use:   "exec --conAddress [contract_address] --callAddress [contract_caller] --state [state]  --proof [proof] --promise [promise] --resultHash [resultHash]",
 		Short: "exec contract",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
@@ -94,6 +95,7 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			state := viper.GetString(flagState)
 			proof := viper.GetString(flagProof)
 			resultHash := viper.GetString(flagResultHash)
+			promise := viper.GetString(flatPromise)
 
 			if err := cliCtx.EnsureAccountExists(); err != nil {
 				fmt.Println("from account not exists")
@@ -115,6 +117,7 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
+			// TODO
 			// contract address must not exist
 			//err = cliCtx.EnsureAccountExistsFromAddr(CIDAddr)
 
@@ -124,9 +127,12 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 			}
 
 			req := types.RequestParam{
-				From:  callAddr,
-				CID:   CIDAddr,
-				Proxy: fromAddr,
+				From:        callAddr,
+				CID:         CIDAddr,
+				Proxy:       fromAddr,
+				DataSources: []types.Amount,
+				Fee:         sdk.Coins{sdk.NewInt64Coin(types.AppCoin, 1)},
+				Sig:         []byte{promise}
 			}
 
 			msg := tcp.NewMsgContractExec(fromAddr, []byte(state), []byte(proof), []byte(resultHash), req)
