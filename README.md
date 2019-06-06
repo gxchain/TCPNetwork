@@ -80,20 +80,19 @@ tcpcli query account $(tcpcli keys show alice -a)
 deploy contract
 
 ```cassandraql
-tcpcli tcp deploy --conAddress tcp1upg6v5g7vvcdm7uxay2c43hz9k0ap0vmazft5s --code aaaa --codeHash aaaa --from tcp1gp8t6r9znpnqsj7k54t9mpkafxcwslv5ld4u39
-
+tcpcli tcp deploy --conAddress tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86 --code "code-x" --codeHash aaaa  --from tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h --dataSources "tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h,tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h" --targets "tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h,tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h"
 ```
 
 response:
 ```
-zhuliting-2:gxb-core zhuliting$ tcpcli tcp deploy --conAddress tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86 --code "code-x" --codeHash aaaa  --from tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk
-{"chain_id":"tcp-chain","account_number":"0","sequence":"0","fee":{"amount":null,"gas":"200000"},"msgs":[{"type":"tcp/deploy","value":{"From":"tcp15juugyz27ldj535ntajp226vwqrnvk0r4w03xk","CID":"tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86","Code":"Y29kZS14","CodeHash":"YWFhYQ==","State":"AA==","Fee":[{"denom":"nametoken","amount":"10"}]}}],"memo":""}
+zhuliting-2:TCPNetwork zhuliting$ tcpcli tcp deploy --conAddress tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86 --code "code-x" --codeHash aaaa  --from tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h --dataSources "tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h,tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h" --targets "tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h,tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h"
+{"chain_id":"tcp-chain","account_number":"0","sequence":"3","fee":{"amount":null,"gas":"200000"},"msgs":[{"type":"tcp/deploy","value":{"From":"tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h","CID":"tcp1rd0cy8wtnxgy40nksjw06refgzzmvelwxdmv86","Targets":["tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h","tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h"],"DataSources":["tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h","tcp16h88dtlvz84ghh6q5kj2pfnjp3epmsx6t3k08h"],"Code":"Y29kZS14","CodeHash":"YWFhYQ==","State":"AA==","Fee":[{"denom":"nametoken","amount":"10"}]}}],"memo":""}
 
 confirm transaction before signing and broadcasting [Y/n]: y
 Password to sign with 'jack':
 {
- "height": "21",
- "txhash": "0571504B293E9A3A017CDCA336315E7931DF5289EB5364287377F04610031962",
+ "height": "709",
+ "txhash": "D5D766DA1F24721F9E72FAC41E9FDFD855DD3CF38EA3BE800E69C7931CFC995F",
  "logs": [
   {
    "msg_index": "0",
@@ -102,7 +101,7 @@ Password to sign with 'jack':
   }
  ],
  "gas_wanted": "200000",
- "gas_used": "21779",
+ "gas_used": "25327",
  "tags": [
   {
    "key": "action",
