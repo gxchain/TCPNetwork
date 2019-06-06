@@ -56,7 +56,7 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 
 
 			// TODO
-			msg := tcp.NewMsgContractDeploy(fromAddr, CIDAddr, []byte(code), []byte(codeHash))
+			msg := tcp.NewMsgContractDeploy(fromAddr, CIDAddr, []sdk.AccAddress{}, []sdk.AccAddress{}, []byte(code), []byte(codeHash))
 
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -130,9 +130,9 @@ func GetCmdContractExec(cdc *codec.Codec) *cobra.Command {
 				From:        callAddr,
 				CID:         CIDAddr,
 				Proxy:       fromAddr,
-				DataSources: []types.Amount,
+				// DataSources: []types.Amount,
 				Fee:         sdk.Coins{sdk.NewInt64Coin(types.AppCoin, 1)},
-				Sig:         []byte{promise}
+				Sig:         []byte(promise),
 			}
 
 			msg := tcp.NewMsgContractExec(fromAddr, []byte(state), []byte(proof), []byte(resultHash), req)

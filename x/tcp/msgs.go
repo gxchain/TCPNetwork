@@ -102,7 +102,7 @@ func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
 // NewMsgContractDeploy is a constructor function for MsgTransfer
 func NewMsgContractDeploy(from sdk.AccAddress, CID sdk.AccAddress, targets []sdk.AccAddress, dataSources []sdk.AccAddress, code []byte, codeHash []byte) MsgContractDeploy {
 	// create contract account
-	contractAcc := types.NewTCPWithDeploy(CID, code, codeHash)
+	contractAcc := types.NewTCPWithDeploy(CID, code, codeHash, targets, dataSources)
 	return MsgContractDeploy{
 		from,
 		contractAcc.Account.Address,
