@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -18,6 +19,8 @@ const (
 	flagContractAddress = "conAddress"
 	flagCode            = "code"
 	flagCodeHash        = "codeHash"
+	flagTargets			= "targets"
+	flagDataSources 	= "dataSources"
 	flagCallerAddress   = "callAddress"
 	flagState           = "state"
 	flagProof           = "proof"
@@ -28,7 +31,7 @@ const (
 // GetCmdContractDeploy is the CLI command for deploying contract
 func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deploy --conAddress [contract_addr] --code [contract_code] --codeHash [contract_hash]",
+		Use:   "deploy --conAddress [contract_addr] --code [contract_code] --codeHash [contract_hash] --targets [addr1,addr2] --dataSources [addr1,addr2]",
 		Short: "deploy contract",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc).WithAccountDecoder(cdc)
@@ -37,6 +40,33 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 			contractAddress := viper.GetString(flagContractAddress)
 			code := viper.GetString(flagCode)
 			codeHash := viper.GetString(flagCodeHash)
+
+			targetsStr := viper.GetString(flagTargets)
+			dataSourcesStr := viper.GetString(flagDataSources)
+
+			// parse target address
+			targetAddressArr := []sdk.AccAddress{}
+			targetAddressStr := strings.TrimSpace(targetsStr)
+			addressStr := strings.Split(targetAddressStr, ",")
+			for _, addrStr := range addressStr {
+				addr, err := sdk.AccAddressFromBech32(addrStr)
+				if err != nil {
+					return err
+				}
+				targetAddressArr = append(targetAddressArr, addr)
+			}
+
+			// parse datasource address
+			dataSourceAddressArr := []sdk.AccAddress{}
+			dataSourceAddrStr := strings.TrimSpace(dataSourcesStr)
+			addressStr = strings.Split(dataSourceAddrStr, ",")
+			for _, addrStr := range addressStr {
+				addr, err := sdk.AccAddressFromBech32(addrStr)
+				if err != nil {
+					return err
+				}
+				dataSourceAddressArr = append(dataSourceAddressArr, addr)
+			}
 
 			if err := cliCtx.EnsureAccountExists(); err != nil {
 				fmt.Println("from account not exists")
@@ -56,7 +86,7 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 
 
 			// TODO
-			msg := tcp.NewMsgContractDeploy(fromAddr, CIDAddr, []sdk.AccAddress{}, []sdk.AccAddress{}, []byte(code), []byte(codeHash))
+			msg := tcp.NewMsgContractDeploy(fromAddr, CIDAddr, targetAddressArr, dataSourceAddressArr, []byte(code), []byte(codeHash))
 
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -72,10 +102,14 @@ func GetCmdContractDeploy(cdc *codec.Codec) *cobra.Command {
 	cmd.Flags().StringP(flagContractAddress, "a", "", "contract address")
 	cmd.Flags().StringP(flagCode, "c", "", "contract code")
 	cmd.Flags().StringP(flagCodeHash, "s", "", "contract code hash")
+	cmd.Flags().String(flagTargets, "", "target addresses")
+	cmd.Flags().String(flagDataSources, "", "dataSource addresses")
 
 	cmd.MarkFlagRequired(flagContractAddress)
 	cmd.MarkFlagRequired(flagCode)
 	cmd.MarkFlagRequired(flagCodeHash)
+	cmd.MarkFlagRequired(flagTargets)
+	cmd.MarkFlagRequired(flagDataSources)
 
 	return cmd
 }

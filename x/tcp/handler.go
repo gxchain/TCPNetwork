@@ -30,6 +30,7 @@ func handleMsgTransfer(ctx sdk.Context, keeper Keeper, msg MsgTransfer) sdk.Resu
 	if !msg.Value.IsValid() {
 		return sdk.ErrInsufficientCoins("invalid coins").Result()
 	}
+	ctx.Logger().Info(fmt.Sprintf("%s", "hello world, handleMsgTransfer"))
 
 	// check fee
 	if msg.Fee.AmountOf(types.AppCoin).Int64() < MinTransferFee {
@@ -80,7 +81,6 @@ func handleMsgContractExec(ctx sdk.Context, keeper Keeper, msg MsgContractExec) 
 
 	// validate request signature
 	// TODO
-
 
 	// check fee
 	if msg.Fee.AmountOf(types.AppCoin).Int64() < MinContractExecFee {

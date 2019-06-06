@@ -13,6 +13,7 @@ const (
 // Query Result Payload for a
 type QueryResContractCode struct {
 	Value string `json:"value"`
+
 }
 
 // implement fmt.Stringer
