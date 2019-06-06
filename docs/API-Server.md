@@ -1,4 +1,9 @@
 # API Server
+使用 tcpcli的RPC API， 需要先开启rest-server
+```
+tcpcli rest-server --chain-id tcp-chain --trust-node --laddr tcp://0.0.0.0:1317
+```
+
 
 ### get account
 
