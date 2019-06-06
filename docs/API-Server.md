@@ -33,6 +33,23 @@ response:
 }
 ```
 
+### get account balance
+
+request:
+```cassandraql
+ curl -s http://127.0.0.1:1317/bank/balances/tcp1zxsps8kjj4eym6su8e34ny9efrd6cgwag8u0k6
+ ```
+
+response:
+```cassandraql
+[
+  {
+    "denom": "nametoken",
+    "amount": "100000000"
+  }
+]
+```
+
 ### get contract code
 request:
  ```cassandraql
